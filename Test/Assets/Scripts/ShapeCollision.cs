@@ -5,11 +5,13 @@ using UnityEngine;
 public class ShapeCollision : MonoBehaviour
 {
     public string Tag;
+    public GameObject AudioObject;
 
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Im here.");
+        AudioObject = GameObject.Find("AudioObject");
     }
 
     // Update is called once per frame
@@ -36,6 +38,7 @@ public class ShapeCollision : MonoBehaviour
     void OnPlacedCorrectly(Collision2D col)
     {
         col.gameObject.GetComponent<MoveableShape>().IsDraggable = false;
+        AudioObject.GetComponent<AudioScript>().PlaySuccessful();
     }
 
     void OnPlacedIncorrectly(Collision2D col)
@@ -43,5 +46,6 @@ public class ShapeCollision : MonoBehaviour
         col.gameObject.GetComponent<MoveableShape>().IsDraggable = false;
         col.gameObject.GetComponent<MoveableShape>().MoveToStartPos();
         //col.gameObject.GetComponent<MoveableShape>().IsDraggable = true;
+        AudioObject.GetComponent<AudioScript>().PlayFail();
     }
 }
