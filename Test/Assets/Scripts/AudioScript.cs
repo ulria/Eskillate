@@ -5,11 +5,12 @@ public class AudioScript : MonoBehaviour
     public AudioClip SuccessfulClip;
     public AudioClip FailClip;
     public AudioSource Source;
+    public float VolumeRatio;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        Source.volume *= VolumeRatio;
     }
 
     // Update is called once per frame
