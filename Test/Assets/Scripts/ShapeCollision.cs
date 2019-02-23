@@ -6,7 +6,6 @@ public class ShapeCollision : MonoBehaviour
 {
     public string Tag;
     public GameObject AudioObject;
-    public Animator Animator;
 
     // Start is called before the first frame update
     void Start()
@@ -38,17 +37,23 @@ public class ShapeCollision : MonoBehaviour
 
     void OnPlacedCorrectly(Collision2D col)
     {
-        col.gameObject.GetComponent<MoveableShape>().IsDraggable = false;
+        // Stop dragging the shape!
+        col.gameObject.GetComponent<MoveableShape>().OnMouseUp();
+        // Play sound
         AudioObject.GetComponent<AudioScript>().PlaySuccessful();
-        Animator.SetTrigger("OnPlacedCorrectly");
+        // Play animation
+        col.gameObject.GetComponent<Animator>().SetTrigger("OnPlacedCorrectly");
     }
 
     void OnPlacedIncorrectly(Collision2D col)
     {
-        col.gameObject.GetComponent<MoveableShape>().IsDraggable = false;
+        // Stop dragging the shape!
+        col.gameObject.GetComponent<MoveableShape>().OnMouseUp();
+        // Go to start position
         col.gameObject.GetComponent<MoveableShape>().MoveToStartPos();
-        //col.gameObject.GetComponent<MoveableShape>().IsDraggable = true;
+        // Play sound
         AudioObject.GetComponent<AudioScript>().PlayFail();
-        Animator.SetTrigger("OnPlacedIncorrectly");
+        // Play animation
+        col.gameObject.GetComponent<Animator>().SetTrigger("OnPlacedIncorrectly");
     }
 }

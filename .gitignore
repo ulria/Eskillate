@@ -34,3 +34,9 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+#Nuget packages
+*/packages/*
+
+*/bin/*
+*/obj/*

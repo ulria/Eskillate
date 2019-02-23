@@ -5,7 +5,7 @@ public class MoveableShape : MonoBehaviour
     private Vector3 _screenPoint;
     private Vector3 _offset;
 
-    public bool IsDraggable;
+    public bool IsDragging;
 
     private Vector3 _startPos;
 
@@ -28,8 +28,8 @@ public class MoveableShape : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (!IsDraggable)
-            return;
+        // Indicate that we are dragging the shape from now on
+        IsDragging = true;
 
         _screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 
@@ -39,7 +39,8 @@ public class MoveableShape : MonoBehaviour
 
     void OnMouseDrag()
     {
-        if (!IsDraggable)
+        // We dont want to drag anymore we are not dragging
+        if (!IsDragging)
             return;
 
         Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, _screenPoint.z);
@@ -47,6 +48,12 @@ public class MoveableShape : MonoBehaviour
 
         Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + _offset;
         transform.position = curPosition;
+    }
+
+    public void OnMouseUp()
+    {
+        // Indicate that we are not dragging anymore
+        IsDragging = false;
     }
 
     public void MoveToStartPos()
