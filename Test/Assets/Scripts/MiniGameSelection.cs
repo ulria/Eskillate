@@ -6,7 +6,7 @@ public class MiniGameSelection : MonoBehaviour
     private bool isDragging = false;
     public float SelectedElementX = 0.0f;
     public float SelectedElementY = 0.0f;
-    private float _elementWidth = 0.0f;
+    private float _elementWidthPlusSpacing = 0.0f;
     private float _scrollRange = 0.0f;
     private float _scrollMin = 0.0f;
     private int _previouslySelectedMiniGameIndex = 0;
@@ -19,11 +19,16 @@ public class MiniGameSelection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _elementWidth = ScrollListContent.transform.GetChild(0).GetComponent<RectTransform>().rect.width;
-        _elementWidth += ScrollListContent.GetComponent<HorizontalLayoutGroup>().spacing;
+        var elementWidth = ScrollListContent.transform.GetChild(0).GetComponent<RectTransform>().rect.width;
+        var spacing = ScrollListContent.GetComponent<HorizontalLayoutGroup>().spacing;
+        _elementWidthPlusSpacing = elementWidth + spacing;
 
-        _scrollRange = (Elements.Length-1) * _elementWidth;
+        _scrollRange = (Elements.Length-1) * _elementWidthPlusSpacing;
         _scrollMin = ScrollListContent.GetComponent<RectTransform>().anchoredPosition.x - _scrollRange;
+
+        ScrollListContent.GetComponent<HorizontalLayoutGroup>().padding.right = (int) (ScrollListViewport.GetComponent<RectTransform>().rect.width - (elementWidth + spacing));
+
+        Elements[0].GetComponent<MiniGame>().OnSelected();
     }
 
     // Update is called once per frame
@@ -33,17 +38,17 @@ public class MiniGameSelection : MonoBehaviour
         {
             var currentScrollX = ScrollListContent.GetComponent<RectTransform>().anchoredPosition.x;
             var scrollOffset = currentScrollX - _scrollMin;
-            var scrollNbElementOffset = Mathf.RoundToInt(scrollOffset / _elementWidth);
-            var newOffset = scrollNbElementOffset * _elementWidth;
+            var scrollNbElementOffset = Mathf.RoundToInt(scrollOffset / _elementWidthPlusSpacing);
+            var newOffset = scrollNbElementOffset * _elementWidthPlusSpacing;
             var newPosition = _scrollMin + newOffset;
             newPosition = Mathf.Clamp(newPosition, _scrollMin, _scrollMin + _scrollRange);
             LerpToElement(newPosition);
 
-            if(scrollNbElementOffset != _previouslySelectedMiniGameIndex)
+            var elementIndexReversed = (Elements.Length - 1) - scrollNbElementOffset;
+            if (elementIndexReversed != _previouslySelectedMiniGameIndex)
             {
-                var elementIndexReversed = (Elements.Length - 1) - scrollNbElementOffset;
                 Elements[elementIndexReversed].GetComponent<MiniGame>().OnSelected();
-                _previouslySelectedMiniGameIndex = scrollNbElementOffset;
+                _previouslySelectedMiniGameIndex = elementIndexReversed;
             }
         }
     }
@@ -64,12 +69,9 @@ public class MiniGameSelection : MonoBehaviour
     {
         isDragging = false;
     }
-
-    // Anchored position of the content : [-420;420]
-    // Find width of an element + spacing
-    // When not dragging : take current anchored pos x and see range.min + 
-
-    // var test = current anchored pos x - range.min
-    // var test2 = test / (width+spacing)
-    // var index  = round to nearest int (test2)
+    
+    public void OnLevelSelectionClicked()
+    {
+        Elements[_previouslySelectedMiniGameIndex].GetComponent<MiniGame>().OnLevelSelectionClicked();
+    }
 }
