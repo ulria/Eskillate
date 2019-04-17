@@ -18,6 +18,17 @@ public class MoveableShape : MonoBehaviour
         _startPos = new Vector3(x, y, 0.0f);
 
         transform.position = _startPos;
+
+        var firstR = Random.Range(0.0f, 1.0f);
+        var firstG = Random.Range(0.0f, 1.0f);
+        var firstB = Random.Range(0.0f, 1.0f);
+        var secondR = Random.Range(0.0f, 1.0f);
+        var secondG = Random.Range(0.0f, 1.0f);
+        var secondB = Random.Range(0.0f, 1.0f);
+
+        var renderer = GetComponent<Renderer>();
+        renderer.material.SetColor("_FirstColor", new Color(firstR, firstG, firstB));
+        renderer.material.SetColor("_SecondColor", new Color(secondR, secondG, secondB));
     }
 
     // Update is called once per frame
