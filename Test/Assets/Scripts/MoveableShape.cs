@@ -9,15 +9,24 @@ public class MoveableShape : MonoBehaviour
 
     private Vector3 _startPos;
 
+    // Constants
+    private float SCREEN_BORDERS_SAFETY_DIST = 50.0f;
+
     // Start is called before the first frame update
     void Start()
     {
-        var x = Random.Range(-40.0f, 0.0f);
-        var y = Random.Range(-10.0f, 20.0f);
+        var xRangeMin = -Screen.width/2 + SCREEN_BORDERS_SAFETY_DIST;
+        var xRangeMax = -SCREEN_BORDERS_SAFETY_DIST;
+
+        var yRangeMin = -Screen.height/2 + SCREEN_BORDERS_SAFETY_DIST;
+        var yRangeMax = -SCREEN_BORDERS_SAFETY_DIST;
+
+        var x = Random.Range(xRangeMin, xRangeMax);
+        var y = Random.Range(yRangeMin, yRangeMax);
 
         _startPos = new Vector3(x, y, 0.0f);
 
-        transform.position = _startPos;
+        GetComponent<RectTransform>().anchoredPosition = _startPos;
     }
 
     // Update is called once per frame
