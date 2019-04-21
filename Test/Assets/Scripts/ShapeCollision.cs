@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ShapeCollision : MonoBehaviour
 {
@@ -10,7 +8,6 @@ public class ShapeCollision : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Im here.");
         AudioObject = GameObject.Find("AudioObject");
     }
 
@@ -37,15 +34,17 @@ public class ShapeCollision : MonoBehaviour
 
     void OnPlacedCorrectly(Collision2D col)
     {
-        col.gameObject.GetComponent<MoveableShape>().IsDraggable = false;
+        // Stop dragging the shape!
+        col.gameObject.GetComponent<MoveableShape>().OnPlacedCorrectly();
+        // Play sound
         AudioObject.GetComponent<AudioScript>().PlaySuccessful();
     }
 
     void OnPlacedIncorrectly(Collision2D col)
     {
-        col.gameObject.GetComponent<MoveableShape>().IsDraggable = false;
-        col.gameObject.GetComponent<MoveableShape>().MoveToStartPos();
-        //col.gameObject.GetComponent<MoveableShape>().IsDraggable = true;
+        // Stop dragging the shape!
+        col.gameObject.GetComponent<MoveableShape>().OnPlacedIncorrectly();
+        // Play sound
         AudioObject.GetComponent<AudioScript>().PlayFail();
     }
 }
