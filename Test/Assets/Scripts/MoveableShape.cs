@@ -107,4 +107,9 @@ public class MoveableShape : MonoBehaviour
         OnMouseUp();
         MoveToStartPos();
     }
+
+    public void Restart()
+    {
+        MoveToStartPos();
+    }
 }

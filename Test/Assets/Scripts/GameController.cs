@@ -4,13 +4,16 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     private int _correctlyPlacedCounter = 0;
-    private int _nbShapesToPlace = 0;
+    private GameObject _pauseMenu;
+    private MoveableShape[] _shapeArray;
 
     // Start is called before the first frame update
     void Start()
     {
-        var shapeArray = FindObjectsOfType<MoveableShape>();
-        _nbShapesToPlace = shapeArray.Length;
+        _shapeArray = FindObjectsOfType<MoveableShape>();
+
+        _pauseMenu = GameObject.Find("PauseMenuCanvas");
+        _pauseMenu.SetActive(false);
     }
 
     // Update is called once per frame
@@ -21,8 +24,13 @@ public class GameController : MonoBehaviour
 
     public void OnPlacedCorrectly()
     {
-        if (++_correctlyPlacedCounter >= _nbShapesToPlace)
+        if (++_correctlyPlacedCounter >= _shapeArray.Length)
             LevelCompleted();
+    }
+
+    public void OnPauseButtonClicked()
+    {
+        _pauseMenu.SetActive(true);
     }
 
     void LevelCompleted()
@@ -33,5 +41,15 @@ public class GameController : MonoBehaviour
         // LevelCompletionClass.SetScore("100%");
         // LevelCompletionClass.SetLevel(1);
         SceneManager.LoadScene("LevelCompletionScreen");
+    }
+
+    public void RestartLevel()
+    {
+        _correctlyPlacedCounter = 0;
+
+        foreach(var moveableShape in _shapeArray)
+        {
+            moveableShape.Restart();
+        }
     }
 }
