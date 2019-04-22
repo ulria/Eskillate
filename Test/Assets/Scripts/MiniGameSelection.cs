@@ -45,9 +45,9 @@ public class MiniGameSelection : MonoBehaviour
             var currentScrollX = ScrollListContent.GetComponent<RectTransform>().anchoredPosition.x;
             var scrollOffset = currentScrollX - _scrollMin;
             var scrollNbElementOffset = Mathf.RoundToInt(scrollOffset / _elementWidthPlusSpacing);
+            scrollNbElementOffset = Mathf.Clamp(scrollNbElementOffset, 0, Elements.Length-1);
             var newOffset = scrollNbElementOffset * _elementWidthPlusSpacing;
             var newPosition = _scrollMin + newOffset;
-            newPosition = Mathf.Clamp(newPosition, _scrollMin, _scrollMin + _scrollRange);
             // Snap to this MiniGame
             LerpToElement(newPosition);
 
@@ -56,11 +56,8 @@ public class MiniGameSelection : MonoBehaviour
             // Call the OnSelected method of the MiniGame in the selection spot
             if (elementIndexReversed != _previouslySelectedMiniGameIndex)
             {
-                if(elementIndexReversed >= 0 && elementIndexReversed < Elements.Length)
-                {
-                    Elements[elementIndexReversed].GetComponent<MiniGame>().OnSelected();
-                    _previouslySelectedMiniGameIndex = elementIndexReversed;
-                }
+                Elements[elementIndexReversed].GetComponent<MiniGame>().OnSelected();
+                _previouslySelectedMiniGameIndex = elementIndexReversed;
             }
         }
     }
