@@ -10,6 +10,8 @@ TagManager:
   - CircleTarget
   - Square
   - SquareTarget
+  - ScrollList
+  - ScrollListContent
   layers:
   - Default
   - TransparentFX
