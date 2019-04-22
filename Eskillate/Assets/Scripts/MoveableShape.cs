@@ -111,5 +111,7 @@ public class MoveableShape : MonoBehaviour
     public void Restart()
     {
         MoveToStartPos();
+        _isDraggable = true;
+        _isDragging = false;
     }
 }
