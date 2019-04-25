@@ -11,7 +11,7 @@ namespace LowPop
 
         // Start is called before the first frame update
         void Start()
-        {
+        { 
             _levels = new List<Level>();
 
             var level1 = new Level(3 ,false)
@@ -32,6 +32,8 @@ namespace LowPop
 
             _levels.Add(level1);
             _levels.Add(level2);
+
+            level1.Load();
         }
 
         // Update is called once per frame

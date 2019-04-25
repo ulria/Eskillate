@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace LowPop
 {
@@ -10,17 +11,24 @@ namespace LowPop
         public int NbElements;
         public bool UseExpressions;
         private List<Element> _elements;
-        private Random _random;
+        private System.Random _random;
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int HighScore { get; set; }
 
         private const int MAX_VALUE = 100;
         private const int MIN_VALUE = 0;
+        private const string SPRITE_PATH = "LowPop/Circle1";
+        private const string MATERIAL_PATH = "Core/GradientShapeMaterial";
 
         public Level(int nbElements, bool useExpressions)
         {
-            _random = new Random();
+            _random = new System.Random();
 
             _elements = new List<Element>();
-            for(var i = 0; i < nbElements; i++)
+            for (var i = 0; i < nbElements; i++)
             {
                 var newElement = GenerateElement(useExpressions);
                 _elements.Add(newElement);
@@ -79,7 +87,7 @@ namespace LowPop
             return new Element()
             {
                 Text = value1.ToString() + " / " + value2.ToString(),
-                Value = (float) value1 / (float) value2
+                Value = (float)value1 / (float)value2
             };
         }
 
@@ -101,9 +109,9 @@ namespace LowPop
             var element = new Element();
             while (!isCorrectElement)
             {
-                if(useExpressions)
+                if (useExpressions)
                 {
-                    switch(operationIndex)
+                    switch (operationIndex)
                     {
                         case 0:
                             element = GenerateNormalElement();
@@ -140,7 +148,42 @@ namespace LowPop
 
         public void Load()
         {
+            for (int i = 0; i < _elements.Count; i++)
+            {
+                GameObject foreground = GameObject.Find("2-Foreground");
+                GameObject newSprite = new GameObject();
+                newSprite.name = $"Poppable{i}";
+                newSprite.transform.parent = foreground.transform;
+                var sr = newSprite.AddComponent<SpriteRenderer>() as SpriteRenderer;
+                sr.sprite = Resources.Load<Sprite>(SPRITE_PATH);
+                sr.material = Resources.Load<Material>(MATERIAL_PATH);
+                newSprite.AddComponent<RectTransform>();
 
+                var x = _random.Next(-Screen.width / 2, Screen.width / 2);
+                var y = _random.Next(-Screen.height / 2, Screen.height / 2);
+                var z = 0;
+
+                newSprite.transform.localPosition = new Vector3(x, y, z);
+
+                GameObject textGO = new GameObject();
+                textGO.transform.parent = newSprite.transform;
+
+                textGO.AddComponent<TMPro.TextMeshPro>();
+                var textMesh = textGO.GetComponent<TMPro.TextMeshPro>();
+                var textMeshRect = textGO.GetComponent<RectTransform>();
+
+                // Set the point size
+                textMeshRect.sizeDelta = new Vector2(newSprite.GetComponent<RectTransform>().rect.width, newSprite.GetComponent<RectTransform>().rect.height);
+                textMesh.fontSizeMax = 10000;
+                textMesh.characterWidthAdjustment = 30;
+                textMesh.enableAutoSizing = true;
+                textMesh.fontSharedMaterial = Resources.Load<Material>("Fonts & Materials/LiberationSans SDF - Drop Shadow");
+                textMesh.fontStyle = TMPro.FontStyles.Bold;
+                textMesh.text = _elements[i].Text;
+                textMesh.alignment = TMPro.TextAlignmentOptions.Center;
+
+                textMesh.transform.localPosition = new Vector3(0, 0, 0);
+            }
         }
     }
 }
