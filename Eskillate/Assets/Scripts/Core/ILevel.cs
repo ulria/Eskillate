@@ -1,10 +1,10 @@
 ﻿namespace Core
 {
-    public abstract class ILevel
+    public interface ILevel
     {
-        public int Id;
-        public string Name;
-        public string Description;
-        public int HighScore;
+        int Id { get; set; }
+        string Name { get; set; }
+        string Description { get; set; }
+        int HighScore { get; set; }
     }
 }
