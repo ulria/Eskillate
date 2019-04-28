@@ -8,8 +8,14 @@ namespace LowPop
 {
     public class Level : ILevel
     {
-        public int NbElements;
-        public bool UseExpressions;
+        public enum Difficulty
+        {
+            NormalOnly,
+            IntArithmetics,
+            FloatArithmetics,
+            ComposedExpressions
+        }
+
         private List<Poppable> _elements;
 
         public int Id { get; set; }
@@ -19,13 +25,22 @@ namespace LowPop
 
         private const int MAX_VALUE = 100;
         private const int MIN_VALUE = 0;
+        private const int DENOMINATOR_MAX_VALUE = 10;
+        private const int SCREEN_WIDTH = 1920;
+        private const int SCREEN_HEIGHT = 1080;
 
-        public Level(int nbElements, bool useExpressions)
+        private List<int> _gridOpenSlots = new List<int>();
+        private int _nbSlotsOnWidth;
+        private int _nbSlotsOnHeight;
+        private float _slotWidth;
+        private float _slotHeight;
+
+        public Level(int nbElements, Difficulty difficulty)
         {
             _elements = new List<Poppable>();
             for (var i = 0; i < nbElements; i++)
             {
-                var newElement = GenerateElement(useExpressions);
+                var newElement = GenerateElement(difficulty);
                 _elements.Add(newElement);
             }
         }
@@ -40,10 +55,31 @@ namespace LowPop
             };
         }
 
+        private Poppable GenerateNormalFloatElement()
+        {
+            var value = UnityEngine.Random.Range((float)MIN_VALUE, (float)MAX_VALUE);
+            return new Poppable()
+            {
+                Text = value.ToString(),
+                Value = value
+            };
+        }
+
         private Poppable GenerateAdditionElement()
         {
-            var value1 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
-            var value2 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
+            var value1 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE/2);
+            var value2 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE/2);
+            return new Poppable()
+            {
+                Text = value1.ToString() + " + " + value2.ToString(),
+                Value = value1 + value2
+            };
+        }
+
+        private Poppable GenerateAdditionFloatElement()
+        {
+            var value1 = UnityEngine.Random.Range((float)MIN_VALUE, (float)MAX_VALUE / 2.0f);
+            var value2 = UnityEngine.Random.Range((float)MIN_VALUE, (float)MAX_VALUE / 2.0f);
             return new Poppable()
             {
                 Text = value1.ToString() + " + " + value2.ToString(),
@@ -54,7 +90,18 @@ namespace LowPop
         private Poppable GenerateSubstractionElement()
         {
             var value1 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
-            var value2 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
+            var value2 = UnityEngine.Random.Range(MIN_VALUE, value1);
+            return new Poppable()
+            {
+                Text = value1.ToString() + " - " + value2.ToString(),
+                Value = value1 - value2
+            };
+        }
+
+        private Poppable GenerateSubstractionFloatElement()
+        {
+            var value1 = UnityEngine.Random.Range((float)MIN_VALUE, (float)MAX_VALUE);
+            var value2 = UnityEngine.Random.Range((float)MIN_VALUE, value1);
             return new Poppable()
             {
                 Text = value1.ToString() + " - " + value2.ToString(),
@@ -65,7 +112,18 @@ namespace LowPop
         private Poppable GenerateMultiplicationElement()
         {
             var value1 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
-            var value2 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
+            var value2 = UnityEngine.Random.Range(MIN_VALUE, Mathf.FloorToInt(MAX_VALUE / value1));
+            return new Poppable()
+            {
+                Text = value1.ToString() + " * " + value2.ToString(),
+                Value = value1 * value2
+            };
+        }
+
+        private Poppable GenerateMultiplicationFloatElement()
+        {
+            var value1 = UnityEngine.Random.Range((float)MIN_VALUE, (float)MAX_VALUE);
+            var value2 = UnityEngine.Random.Range(MIN_VALUE, (MAX_VALUE / value1));
             return new Poppable()
             {
                 Text = value1.ToString() + " * " + value2.ToString(),
@@ -75,12 +133,26 @@ namespace LowPop
 
         private Poppable GenerateDivisionElement()
         {
-            var value1 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
-            var value2 = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
+            var denominator = UnityEngine.Random.Range(MIN_VALUE, DENOMINATOR_MAX_VALUE);
+            var numerator = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
+            var value = (float) numerator / (float) denominator;
+            var roundedValue = Mathf.RoundToInt(value);
+            var numeratorRounded = roundedValue * denominator;
             return new Poppable()
             {
-                Text = value1.ToString() + " / " + value2.ToString(),
-                Value = (float)value1 / (float)value2
+                Text = numeratorRounded.ToString() + " / " + denominator.ToString(),
+                Value = (float)numeratorRounded / (float)denominator
+            };
+        }
+
+        private Poppable GenerateDivisionFloatElement()
+        {
+            var denominator = UnityEngine.Random.Range(MIN_VALUE, DENOMINATOR_MAX_VALUE);
+            var numerator = UnityEngine.Random.Range(MIN_VALUE, MAX_VALUE);
+            return new Poppable()
+            {
+                Text = numerator.ToString() + " / " + denominator.ToString(),
+                Value = (float)numerator / (float)denominator
             };
         }
 
@@ -94,62 +166,210 @@ namespace LowPop
             };
         }
 
-        private Poppable GenerateElement(bool useExpressions)
+        private Poppable GenerateNegativeFloatElement()
         {
-            var isCorrectElement = false;
+            var value = UnityEngine.Random.Range((float)MIN_VALUE, (float)MAX_VALUE);
+            return new Poppable()
+            {
+                Text = "-" + value.ToString(),
+                Value = -value
+            };
+        }
 
-            var operationIndex = UnityEngine.Random.Range(0, 5);
+        private Poppable GenerateElement(Difficulty difficulty)
+        {
             var element = new Poppable();
+            
+            switch(difficulty)
+            {
+                case Difficulty.NormalOnly:
+                    element = GenerateElementNormalOnly();
+                    break;
+                case Difficulty.IntArithmetics:
+                    element = GenerateElementIntArithmetics();
+                    break;
+                case Difficulty.FloatArithmetics:
+                    element = GenerateElementFloatArithmetics();
+                    break;
+                case Difficulty.ComposedExpressions:
+                    element = GenerateElementFloatArithmetics();
+                    break;
+            }
+
+            return element;
+        }
+
+        public Poppable GenerateElementNormalOnly()
+        {
+            bool isCorrectElement = false;
+            Poppable poppable = new Poppable();
+
             while (!isCorrectElement)
             {
-                if (useExpressions)
-                {
-                    switch (operationIndex)
-                    {
-                        case 0:
-                            element = GenerateNormalElement();
-                            break;
-                        case 1:
-                            element = GenerateAdditionElement();
-                            break;
-                        case 2:
-                            element = GenerateSubstractionElement();
-                            break;
-                        case 3:
-                            element = GenerateMultiplicationElement();
-                            break;
-                        case 4:
-                            element = GenerateDivisionElement();
-                            break;
-                        case 5:
-                            element = GenerateNegativeElement();
-                            break;
-                        default:
-                            throw new ArgumentException("Tried to generate an element with an weird operationIndex");
-                    }
-                }
-                else
-                {
-                    element = GenerateNormalElement();
-                }
+                poppable = GenerateNormalElement();
 
-                if (!_elements.Any(elem => elem.Value == element.Value))
+                if (!_elements.Any(elem => elem.Value == poppable.Value))
                     isCorrectElement = true;
             }
-            return element;
+            return poppable;
+        }
+
+        public Poppable GenerateElementIntArithmetics()
+        {
+            bool isCorrectElement = false;
+            var operationIndex = UnityEngine.Random.Range(0, 5);
+            Poppable poppable = new Poppable();
+
+            while (!isCorrectElement)
+            {
+                switch (operationIndex)
+                {
+                    case 0:
+                        poppable = GenerateNormalElement();
+                        break;
+                    case 1:
+                        poppable = GenerateAdditionElement();
+                        break;
+                    case 2:
+                        poppable = GenerateSubstractionElement();
+                        break;
+                    case 3:
+                        poppable = GenerateMultiplicationElement();
+                        break;
+                    case 4:
+                        poppable = GenerateDivisionElement();
+                        break;
+                    case 5:
+                        poppable = GenerateNegativeElement();
+                        break;
+                    default:
+                        throw new ArgumentException("Tried to generate an element with an weird operationIndex");
+                }
+
+                if (!_elements.Any(elem => elem.Value == poppable.Value))
+                    isCorrectElement = true;
+            }
+            return poppable;
+        }
+
+        public Poppable GenerateElementFloatArithmetics()
+        {
+            bool isCorrectElement = false;
+            var operationIndex = UnityEngine.Random.Range(0, 5);
+            Poppable poppable = new Poppable();
+
+            while (!isCorrectElement)
+            {
+                switch (operationIndex)
+                {
+                    case 0:
+                        poppable = GenerateNormalFloatElement();
+                        break;
+                    case 1:
+                        poppable = GenerateAdditionFloatElement();
+                        break;
+                    case 2:
+                        poppable = GenerateSubstractionFloatElement();
+                        break;
+                    case 3:
+                        poppable = GenerateMultiplicationFloatElement();
+                        break;
+                    case 4:
+                        poppable = GenerateDivisionFloatElement();
+                        break;
+                    case 5:
+                        poppable = GenerateNegativeFloatElement();
+                        break;
+                    default:
+                        throw new ArgumentException("Tried to generate an element with an weird operationIndex");
+                }
+
+                if (!_elements.Any(elem => elem.Value == poppable.Value))
+                    isCorrectElement = true;
+            }
+            return poppable;
         }
 
         public List<Poppable> Load()
         {
+            CreatePoppableGrid();
+
             for (int i = 0; i < _elements.Count; i++)
             {
                 _elements[i].Load(i);
+                var position = AssignPoppablePosition();
+                _elements[i].SetPosition(position);
             }
 
             var poppableComparer = new PoppableComparer();
             _elements.Sort(poppableComparer);
 
             return _elements;
+        }
+
+        private void CreatePoppableGrid()
+        {
+            var nbElements = _elements.Count;
+            // Find width and height of screen
+            //var screenWidth = Screen.width;
+            var screenWidth = SCREEN_WIDTH;
+            //var screenHeight = Screen.height;
+            var screenHeight = SCREEN_HEIGHT;
+            // Find h/w ratio
+            var ratio = (float)screenHeight / screenWidth;
+            // Find minW = sqrt(n/r)
+            var minSlotsOnWidth = Mathf.Sqrt((float)nbElements / ratio);
+            // Round up minW
+            var minSlotsOnWidthRounded = Mathf.CeilToInt(minSlotsOnWidth);
+            // Find h = r * w
+            var minSlotsOnHeightRounded = Mathf.CeilToInt(ratio * minSlotsOnWidth);
+            // Divide screen in w*h slots
+            var nbSlots = minSlotsOnWidthRounded * minSlotsOnHeightRounded;
+            // Fill openSlots with numbers from 0 to size - 1
+            for(var i = 0; i < nbSlots; i++)
+            {
+                _gridOpenSlots.Add(i);
+            }
+            // Store in a private variable the number of slots in a row, the number of slots in a column, the width and the height of a slot
+            _nbSlotsOnWidth = minSlotsOnWidthRounded;
+            _nbSlotsOnHeight = minSlotsOnHeightRounded;
+
+            _slotWidth = screenWidth / _nbSlotsOnWidth;
+            _slotHeight = screenHeight / _nbSlotsOnHeight;
+        }
+
+        private Vector2 AssignPoppablePosition()
+        {
+            // openSlotIndex = Generate a random number from 0 to size of openSlots-1
+            var openSlotIndex = UnityEngine.Random.Range(0, _gridOpenSlots.Count - 1);
+            // slotIndex = openSlots.At(openSlotIndex)
+            var slotIndex = _gridOpenSlots[openSlotIndex];
+            _gridOpenSlots.Remove(slotIndex);
+            // Find the position of center of slot #slotIndex
+            var slotPos = FindSlotPosition(slotIndex);
+            // Find extra room in width and height in each slot (extraWidth = slot width - poppable width)
+            var extraWidth = _slotWidth - 100;
+            var extraHeight = _slotHeight - 100;
+            // Generate a random float between 0 and extraWidth
+            var randomWidth = UnityEngine.Random.Range(0, extraWidth);
+            var randomHeight = UnityEngine.Random.Range(0, extraHeight);
+            // widthOffset = randomWidth - extraWidth/2
+            var widthOffset = randomWidth - extraWidth / 2;
+            var heightOffset = randomHeight - extraHeight / 2;
+            // Return slotPosition + (widthOffset, heightOffset)
+            return slotPos + new Vector2(widthOffset, heightOffset);
+        }
+
+        private Vector2 FindSlotPosition(int id)
+        {
+            // Find the row (id / numberSlots in a Row -> rounded down)
+            var column = Mathf.FloorToInt(id / _nbSlotsOnWidth);
+            var row = id - (column * _nbSlotsOnWidth);
+
+            var x = _slotWidth / 2 + (row * _slotWidth) + -SCREEN_WIDTH / 2;
+            var y = _slotHeight / 2 + (column * _slotHeight) + -SCREEN_HEIGHT / 2;
+
+            return new Vector2(x, y);
         }
     }
 }

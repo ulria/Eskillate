@@ -16,7 +16,7 @@ namespace LowPop
         { 
             _levels = new List<Level>();
 
-            var level1 = new Level(3 ,false)
+            var level1 = new Level(3 , Level.Difficulty.NormalOnly)
             {
                 Id = 1,
                 Name = "Level1",
@@ -24,7 +24,7 @@ namespace LowPop
                 HighScore = 0
             };
 
-            var level2 = new Level(5, true)
+            var level2 = new Level(5, Level.Difficulty.IntArithmetics)
             {
                 Id = 1,
                 Name = "Level1",
@@ -36,7 +36,7 @@ namespace LowPop
             _levels.Add(level2);
 
             // TODO - Remove this as it will be called from the level selection menu
-            LoadLevel(0);
+            LoadLevel(1);
         }
 
         // Update is called once per frame

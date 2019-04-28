@@ -8,39 +8,41 @@ namespace LowPop
         public float Value;
         public string Text;
 
+        private GameObject _poppableGameObject;
+
         private const string SPRITE_PATH = "LowPop/Circle1";
         private const string MATERIAL_PATH = "Core/GradientShapeMaterial";
 
         public void Load(int poppableIndex)
         {
             GameObject foreground = GameObject.Find("2-Foreground");
-            GameObject newSprite = new GameObject();
-            newSprite.name = $"Poppable{poppableIndex}";
-            newSprite.transform.parent = foreground.transform;
-            var sr = newSprite.AddComponent<SpriteRenderer>() as SpriteRenderer;
+            _poppableGameObject = new GameObject();
+            _poppableGameObject.name = $"Poppable{poppableIndex}";
+            _poppableGameObject.transform.parent = foreground.transform;
+            var sr = _poppableGameObject.AddComponent<SpriteRenderer>() as SpriteRenderer;
             sr.sprite = Resources.Load<Sprite>(SPRITE_PATH);
             sr.material = Resources.Load<Material>(MATERIAL_PATH);
-            newSprite.AddComponent<RectTransform>();
+            _poppableGameObject.AddComponent<RectTransform>();
 
-            newSprite.AddComponent<PoppableScript>().Value = this.Value;
+            _poppableGameObject.AddComponent<PoppableScript>().Value = this.Value;
 
             var x = Random.Range(-Screen.width / 2, Screen.width / 2);
             var y = Random.Range(-Screen.height / 2, Screen.height / 2);
             var z = 0;
 
-            newSprite.transform.localPosition = new Vector3(x, y, z);
+            _poppableGameObject.transform.localPosition = new Vector3(x, y, z);
 
-            newSprite.AddComponent<PolygonCollider2D>();
+            _poppableGameObject.AddComponent<PolygonCollider2D>();
 
             GameObject textGO = new GameObject();
-            textGO.transform.parent = newSprite.transform;
+            textGO.transform.parent = _poppableGameObject.transform;
 
             textGO.AddComponent<TMPro.TextMeshPro>();
             var textMesh = textGO.GetComponent<TMPro.TextMeshPro>();
             var textMeshRect = textGO.GetComponent<RectTransform>();
 
             // Set the point size
-            textMeshRect.sizeDelta = new Vector2(newSprite.GetComponent<RectTransform>().rect.width, newSprite.GetComponent<RectTransform>().rect.height);
+            textMeshRect.sizeDelta = new Vector2(_poppableGameObject.GetComponent<RectTransform>().rect.width, _poppableGameObject.GetComponent<RectTransform>().rect.height);
             textMesh.fontSizeMax = 10000;
             textMesh.characterWidthAdjustment = 30;
             textMesh.enableAutoSizing = true;
@@ -48,8 +50,15 @@ namespace LowPop
             textMesh.fontStyle = TMPro.FontStyles.Bold;
             textMesh.text = this.Text;
             textMesh.alignment = TMPro.TextAlignmentOptions.Center;
+            textMesh.enableWordWrapping = false;
+            textMesh.margin = new Vector4(10, 0, 10, 0);
 
             textMesh.transform.localPosition = new Vector3(0, 0, 0);
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            _poppableGameObject.transform.localPosition = new Vector3(position.x, position.y, 0);
         }
     }
 
