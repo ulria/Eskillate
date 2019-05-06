@@ -7,7 +7,6 @@ namespace DragAndDrop
     public class GameController : MonoBehaviour, IGameController
     {
         private int _correctlyPlacedCounter = 0;
-        private GameObject _pauseMenu;
         private MoveableShape[] _shapeArray;
 
         // Start is called before the first frame update
@@ -15,8 +14,8 @@ namespace DragAndDrop
         {
             _shapeArray = FindObjectsOfType<MoveableShape>();
 
-            _pauseMenu = GameObject.Find("PauseMenuCanvas");
-            _pauseMenu.SetActive(false);
+            // Add PauseMenu
+            StartCoroutine(LoadAdditiveScene.LoadAsync("PauseMenu"));
         }
 
         // Update is called once per frame
@@ -29,11 +28,6 @@ namespace DragAndDrop
         {
             if (++_correctlyPlacedCounter >= _shapeArray.Length)
                 LevelCompleted();
-        }
-
-        public void OnPauseButtonClicked()
-        {
-            _pauseMenu.SetActive(true);
         }
 
         void LevelCompleted()

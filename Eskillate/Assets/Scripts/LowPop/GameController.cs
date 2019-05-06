@@ -37,6 +37,9 @@ namespace LowPop
 
             // TODO - Remove this as it will be called from the level selection menu
             LoadLevel(1);
+
+            // Add pause menu
+            StartCoroutine(LoadAdditiveScene.LoadAsync("PauseMenu"));
         }
 
         // Update is called once per frame
