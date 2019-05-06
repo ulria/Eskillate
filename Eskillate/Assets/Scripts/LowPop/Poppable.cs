@@ -33,6 +33,7 @@ namespace LowPop
             _poppableGameObject.transform.localPosition = new Vector3(x, y, z);
 
             _poppableGameObject.AddComponent<PolygonCollider2D>();
+            _poppableGameObject.tag = "Poppable";
 
             GameObject textGO = new GameObject();
             textGO.transform.parent = _poppableGameObject.transform;

@@ -304,7 +304,12 @@ namespace LowPop
             var poppableComparer = new PoppableComparer();
             _elements.Sort(poppableComparer);
 
-            return _elements;
+            return new List<Poppable>(_elements);
+        }
+
+        public List<Poppable> Reload()
+        {
+            return new List<Poppable>(_elements);
         }
 
         private void CreatePoppableGrid()

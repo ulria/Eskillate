@@ -23,7 +23,13 @@ namespace LowPop
         {
             var successful = _gameController.GetComponent<GameController>().OnPopped(Value);
             if (successful)
-                gameObject.SetActive(false);
+            {
+                var renderers = gameObject.GetComponentsInChildren<Renderer>();
+                foreach(var renderer in renderers)
+                {
+                    renderer.enabled = false;
+                }
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ namespace LowPop
     public class GameController : MonoBehaviour, IGameController
     {
         private List<Level> _levels;
+        private int _loadedLevelId;
         private List<Poppable> _poppables;
 
         // Start is called before the first frame update
@@ -51,11 +52,21 @@ namespace LowPop
         public void LoadLevel(int id)
         {
             _poppables = _levels[id].Load();
+            _loadedLevelId = id;
         }
 
         public void RestartLevel()
         {
-
+            _poppables = _levels[_loadedLevelId].Reload();
+            var poppableGameObjects = GameObject.FindGameObjectsWithTag("Poppable");
+            foreach(var poppableGameObject in poppableGameObjects)
+            {
+                var renderers = poppableGameObject.GetComponentsInChildren<Renderer>();
+                foreach(var renderer in renderers)
+                {
+                    renderer.enabled = true;
+                }
+            }
         }
 
         public bool OnPopped(float valuePopped)
