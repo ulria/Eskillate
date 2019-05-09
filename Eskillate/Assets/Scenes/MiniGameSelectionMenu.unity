@@ -1754,7 +1754,7 @@ MonoBehaviour:
   Name: Drag And Drop
   Description: You need to drag and drop the shapes on the target of the same shape.
   LevelSelectionSceneName: DragAndDrop
-  MiniGamePreviewClip: {fileID: 32900000, guid: e2785d471b077094c89c725faff1a72e,
+  MiniGamePreviewClip: {fileID: 32900000, guid: 3adc55a75cf75d344a14d7fdb86eb52f,
     type: 3}
 --- !u!23 &1065036044
 MeshRenderer:
