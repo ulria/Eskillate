@@ -112,7 +112,9 @@ namespace DragAndDrop
 
         public void Restart()
         {
-            MoveToStartPos();
+			MoveToStartPos();
+			_isDraggable = true;
+			_isDragging = false;
         }
     }
 }

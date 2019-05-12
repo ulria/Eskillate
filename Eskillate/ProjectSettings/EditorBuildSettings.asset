@@ -8,8 +8,8 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
-    path: Assets/Scenes/MiniGameS/LowPop.unity
+  - enabled: 0
+    path: Assets/Scenes/MiniGames/LowPop.unity
     guid: 5953a00d6d4de3d458e66123c3ad966a
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MiniGameSelectionMenu.unity
     guid: d6f29d75bf875774dbc05cb1810062d8
   - enabled: 1
-    path: Assets/Scenes/MiniGameS/DragAndDrop.unity
+    path: Assets/Scenes/MiniGames/DragAndDrop.unity
     guid: 72230751ff704bf489f2217498037443
   - enabled: 1
     path: Assets/Scenes/Core/PauseMenu.unity
