@@ -27,9 +27,9 @@ namespace LowPop
 
             var level2 = new Level(5, Level.Difficulty.IntArithmetics)
             {
-                Id = 1,
-                Name = "Level1",
-                Description = "This is level 1.",
+                Id = 2,
+                Name = "Level2",
+                Description = "This is level 2.",
                 HighScore = 0
             };
 
@@ -37,7 +37,7 @@ namespace LowPop
             _levels.Add(level2);
 
             // TODO - Remove this as it will be called from the level selection menu
-            LoadLevel(1);
+            LoadLevel(0);
 
             // Add pause menu
             StartCoroutine(LoadAdditiveScene.LoadAsync("PauseMenu"));

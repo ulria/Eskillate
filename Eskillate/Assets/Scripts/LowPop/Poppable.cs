@@ -26,20 +26,13 @@ namespace LowPop
 
             _poppableGameObject.AddComponent<PoppableScript>().Value = this.Value;
 
-            var x = Random.Range(-Screen.width / 2, Screen.width / 2);
-            var y = Random.Range(-Screen.height / 2, Screen.height / 2);
-            var z = 0;
-
-            _poppableGameObject.transform.localPosition = new Vector3(x, y, z);
-
             _poppableGameObject.AddComponent<PolygonCollider2D>();
             _poppableGameObject.tag = "Poppable";
 
             GameObject textGO = new GameObject();
             textGO.transform.parent = _poppableGameObject.transform;
 
-            textGO.AddComponent<TMPro.TextMeshPro>();
-            var textMesh = textGO.GetComponent<TMPro.TextMeshPro>();
+            var textMesh = textGO.AddComponent<TMPro.TextMeshPro>();
             var textMeshRect = textGO.GetComponent<RectTransform>();
 
             // Set the point size

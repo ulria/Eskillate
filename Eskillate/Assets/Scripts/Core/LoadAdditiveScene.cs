@@ -19,8 +19,8 @@ namespace Core
 
             Debug.Log("Finished loading Scene: " + scene);
 
-            var test = GameObject.Find("PauseMenuCanvas");
-            test.SetActive(false);
+            var pauseMenuCanvas = GameObject.Find("PauseMenuCanvas");
+            pauseMenuCanvas.SetActive(false);
         }
     }
 }

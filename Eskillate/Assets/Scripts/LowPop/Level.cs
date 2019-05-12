@@ -28,6 +28,9 @@ namespace LowPop
         private const int DENOMINATOR_MAX_VALUE = 10;
         private const int SCREEN_WIDTH = 1920;
         private const int SCREEN_HEIGHT = 1080;
+        private const float SPRITE_WIDTH = 153.5f;
+        private const float SPRITE_HEIGHT = 153.5f;
+        private const int MAX_ATTEMPTS = 100;
 
         private List<int> _gridOpenSlots = new List<int>();
         private int _nbSlotsOnWidth;
@@ -199,10 +202,11 @@ namespace LowPop
             return element;
         }
 
-        public Poppable GenerateElementNormalOnly()
+        private Poppable GenerateElementNormalOnly()
         {
             bool isCorrectElement = false;
             Poppable poppable = new Poppable();
+            int counter = 0;
 
             while (!isCorrectElement)
             {
@@ -210,15 +214,21 @@ namespace LowPop
 
                 if (!_elements.Any(elem => elem.Value == poppable.Value))
                     isCorrectElement = true;
+
+                if (counter >= MAX_ATTEMPTS)
+                    throw new ArgumentException($"Tried {MAX_ATTEMPTS} times to generate an element, but was not sucessful. Maybe there is too many poppables or too few possible values.");
+
+                counter++;
             }
             return poppable;
         }
 
-        public Poppable GenerateElementIntArithmetics()
+        private Poppable GenerateElementIntArithmetics()
         {
             bool isCorrectElement = false;
             var operationIndex = UnityEngine.Random.Range(0, 5);
             Poppable poppable = new Poppable();
+            int counter = 0;
 
             while (!isCorrectElement)
             {
@@ -248,15 +258,21 @@ namespace LowPop
 
                 if (!_elements.Any(elem => elem.Value == poppable.Value))
                     isCorrectElement = true;
+
+                if (counter >= MAX_ATTEMPTS)
+                    throw new ArgumentException($"Tried {MAX_ATTEMPTS} times to generate an element, but was not sucessful. Maybe there is too many poppables or too few possible values.");
+
+                counter++;
             }
             return poppable;
         }
 
-        public Poppable GenerateElementFloatArithmetics()
+        private Poppable GenerateElementFloatArithmetics()
         {
             bool isCorrectElement = false;
             var operationIndex = UnityEngine.Random.Range(0, 5);
             Poppable poppable = new Poppable();
+            int counter = 0;
 
             while (!isCorrectElement)
             {
@@ -286,6 +302,11 @@ namespace LowPop
 
                 if (!_elements.Any(elem => elem.Value == poppable.Value))
                     isCorrectElement = true;
+
+                if (counter >= MAX_ATTEMPTS)
+                    throw new ArgumentException($"Tried {MAX_ATTEMPTS} times to generate an element, but was not sucessful. Maybe there is too many poppables or too few possible values.");
+
+                counter++;
             }
             return poppable;
         }
@@ -315,13 +336,8 @@ namespace LowPop
         private void CreatePoppableGrid()
         {
             var nbElements = _elements.Count;
-            // Find width and height of screen
-            //var screenWidth = Screen.width;
-            var screenWidth = SCREEN_WIDTH;
-            //var screenHeight = Screen.height;
-            var screenHeight = SCREEN_HEIGHT;
             // Find h/w ratio
-            var ratio = (float)screenHeight / screenWidth;
+            var ratio = (float)SCREEN_HEIGHT / SCREEN_WIDTH;
             // Find minW = sqrt(n/r)
             var minSlotsOnWidth = Mathf.Sqrt((float)nbElements / ratio);
             // Round up minW
@@ -339,8 +355,8 @@ namespace LowPop
             _nbSlotsOnWidth = minSlotsOnWidthRounded;
             _nbSlotsOnHeight = minSlotsOnHeightRounded;
 
-            _slotWidth = screenWidth / _nbSlotsOnWidth;
-            _slotHeight = screenHeight / _nbSlotsOnHeight;
+            _slotWidth = SCREEN_WIDTH / _nbSlotsOnWidth;
+            _slotHeight = SCREEN_HEIGHT / _nbSlotsOnHeight;
         }
 
         private Vector2 AssignPoppablePosition()
@@ -353,8 +369,12 @@ namespace LowPop
             // Find the position of center of slot #slotIndex
             var slotPos = FindSlotPosition(slotIndex);
             // Find extra room in width and height in each slot (extraWidth = slot width - poppable width)
-            var extraWidth = _slotWidth - 100;
-            var extraHeight = _slotHeight - 100;
+            var extraWidth = _slotWidth - SPRITE_WIDTH;
+            var extraHeight = _slotHeight - SPRITE_HEIGHT;
+
+            if (extraWidth < 0 || extraHeight < 0)
+                throw new ArgumentException("Not enough space inside a slot to fit the sprite.");
+
             // Generate a random float between 0 and extraWidth
             var randomWidth = UnityEngine.Random.Range(0, extraWidth);
             var randomHeight = UnityEngine.Random.Range(0, extraHeight);
@@ -368,11 +388,11 @@ namespace LowPop
         private Vector2 FindSlotPosition(int id)
         {
             // Find the row (id / numberSlots in a Row -> rounded down)
-            var column = Mathf.FloorToInt(id / _nbSlotsOnWidth);
-            var row = id - (column * _nbSlotsOnWidth);
+            var row = Mathf.FloorToInt(id / _nbSlotsOnWidth);
+            var column = id - (row * _nbSlotsOnWidth);
 
-            var x = _slotWidth / 2 + (row * _slotWidth) + -SCREEN_WIDTH / 2;
-            var y = _slotHeight / 2 + (column * _slotHeight) + -SCREEN_HEIGHT / 2;
+            var x = _slotWidth / 2 + (column * _slotWidth) + -SCREEN_WIDTH / 2;
+            var y = _slotHeight / 2 + (row * _slotHeight) + -SCREEN_HEIGHT / 2;
 
             return new Vector2(x, y);
         }
