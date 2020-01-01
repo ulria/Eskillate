@@ -12,6 +12,7 @@ TagManager:
   - SquareTarget
   - ScrollList
   - ScrollListContent
+  - Poppable
   layers:
   - Default
   - TransparentFX
