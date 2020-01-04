@@ -18,7 +18,8 @@ namespace LowPop
 
         private List<Poppable> _elements;
 
-        public int Id { get; set; }
+        public MiniGameId MiniGameId { get; set; }
+        public int LevelId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int HighScore { get; set; }
