@@ -329,6 +329,14 @@ namespace LowPop
             return new List<Poppable>(_elements);
         }
 
+        public void Unload()
+        {
+            foreach(var element in _elements)
+            {
+                element.Unload();
+            }
+        }
+
         public List<Poppable> Reload()
         {
             return new List<Poppable>(_elements);

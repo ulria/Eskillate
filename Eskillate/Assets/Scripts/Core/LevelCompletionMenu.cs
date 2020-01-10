@@ -36,16 +36,15 @@ namespace Core
             levelDescriptionGO.GetComponent<TMPro.TextMeshProUGUI>().text = levelInfo.Description;
             var scoreGO = GameObject.FindGameObjectWithTag("Score");
             scoreGO.GetComponent<TMPro.TextMeshProUGUI>().text = score.ToString("0");
-
-            var highScore = levelInfo.HighScore;
+            
             if (score > levelInfo.HighScore)
             {
                 OnNewHighScore();
                 HighScoreHelper.SaveNewHighScore(levelInfo.MiniGameId, levelInfo.LevelId, score);
-                highScore = score;
+                levelInfo.HighScore = score;
             }
             var highscoreGO = GameObject.FindGameObjectWithTag("Highscore");
-            highscoreGO.GetComponent<TMPro.TextMeshProUGUI>().text = highScore.ToString("0");
+            highscoreGO.GetComponent<TMPro.TextMeshProUGUI>().text = levelInfo.HighScore.ToString("0");
         }
 
         private void OnNewHighScore()

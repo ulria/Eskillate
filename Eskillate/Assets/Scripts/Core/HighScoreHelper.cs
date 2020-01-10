@@ -30,6 +30,19 @@ public class HighScoreHelper
         SaveHighScores();
     }
 
+    public static Dictionary<int, int> GetHighScores(MiniGameId miniGameId)
+    {
+        var dict = new Dictionary<int, int>();
+
+        var highScores = LoadHighScores();
+        var miniGameHighScores = highScores.LevelHighScores.Where(hs => hs.MiniGameId == miniGameId);
+        foreach(var highScore in miniGameHighScores)
+        {
+            dict.Add(highScore.LevelId, highScore.Score);
+        }
+        return dict;
+    }
+
     private static HighScores LoadHighScores()
     {
         if (_highScores != null)

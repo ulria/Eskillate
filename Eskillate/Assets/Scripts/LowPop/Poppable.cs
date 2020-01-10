@@ -50,6 +50,11 @@ namespace LowPop
             textMesh.transform.localPosition = new Vector3(0, 0, 0);
         }
 
+        public void Unload()
+        {
+            GameObject.Destroy(_poppableGameObject);
+        }
+
         public void SetPosition(Vector2 position)
         {
             _poppableGameObject.transform.localPosition = new Vector3(position.x, position.y, 0);

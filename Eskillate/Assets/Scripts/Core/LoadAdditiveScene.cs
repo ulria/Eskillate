@@ -17,6 +17,20 @@ namespace Core
             Debug.Log("Finished loading Scene: LevelCompletionMenu");
         }
 
+        public static void LoadSceneAdditively(MonoBehaviour mono, string sceneName, Action callback)
+        {
+            mono.StartCoroutine(LoadAdditiveScene.LoadAsync(sceneName, callback));
+        }
+
+        public static void LoadScene(MonoBehaviour mono, string sceneName, Action callback)
+        {
+            var sceneLoadedCallback = new SceneLoadedCallback()
+            {
+                Callback = callback
+            };
+            mono.StartCoroutine(LoadAdditiveScene.LoadAsync(sceneName, sceneLoadedCallback));
+        }
+
         private static void LoadLevelCompletionMenu(MonoBehaviour mono)
         {
             // Add level completion menu
@@ -54,6 +68,16 @@ namespace Core
 
                 callback();
             }
+
+            internal static IEnumerator LoadAsync(string scene, SceneLoadedCallback callbackObj)
+            {
+                return LoadAsync(scene, callbackObj.Callback);
+            }
+        }
+
+        private class SceneLoadedCallback
+        {
+            internal Action Callback;
         }
     }
 }
