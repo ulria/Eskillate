@@ -13,6 +13,11 @@ TagManager:
   - ScrollList
   - ScrollListContent
   - Poppable
+  - Score
+  - Highscore
+  - LevelName
+  - LevelCompletionMenu
+  - LevelDescription
   layers:
   - Default
   - TransparentFX

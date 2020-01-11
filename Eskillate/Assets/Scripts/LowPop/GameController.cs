@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using Core;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +13,13 @@ namespace LowPop
 
         // Start is called before the first frame update
         void Start()
-        { 
+        {
             _levels = new List<Level>();
 
             var level1 = new Level(3 , Level.Difficulty.NormalOnly)
             {
-                Id = 1,
+                MiniGameId = MiniGameId.LowPop,
+                LevelId = 1,
                 Name = "Level1",
                 Description = "This is level 1.",
                 HighScore = 0
@@ -27,7 +27,8 @@ namespace LowPop
 
             var level2 = new Level(5, Level.Difficulty.IntArithmetics)
             {
-                Id = 2,
+                MiniGameId = MiniGameId.LowPop,
+                LevelId = 2,
                 Name = "Level2",
                 Description = "This is level 2.",
                 HighScore = 0
@@ -39,8 +40,8 @@ namespace LowPop
             // TODO - Remove this as it will be called from the level selection menu
             LoadLevel(0);
 
-            // Add pause menu
-            StartCoroutine(LoadAdditiveScene.LoadAsync("PauseMenu"));
+            // Add menus
+            LoadHelper.LoadGenericMenus(this);
         }
 
         // Update is called once per frame
@@ -87,11 +88,8 @@ namespace LowPop
         void LevelCompleted()
         {
             Debug.Log("Level Completed");
-            // Call a static class and set the information, so that it is persistent to the next scene
-            // LevelCompletionClass.SetMiniGameName("DragAndDrop")
-            // LevelCompletionClass.SetScore("100%");
-            // LevelCompletionClass.SetLevel(1);
-            SceneManager.LoadScene("LevelCompletionScreen");
+            var levelCompletionGO = GameObject.FindGameObjectWithTag("LevelCompletionMenu");
+            levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(_levels[_loadedLevelId], 100);
         }
     }
 }
