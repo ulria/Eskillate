@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Label = LabelHelper.Label;
 
 namespace LowPop
 {
@@ -16,18 +17,18 @@ namespace LowPop
             ComposedExpressions
         }
 
-        private List<Poppable> _elements;
+        protected List<Poppable> _elements;
 
         public MiniGameId MiniGameId { get; set; }
         public int LevelId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public Label NameLabel { get; set; }
+        public Label DescriptionLabel { get; set; }
         public int HighScore { get; set; }
 
         private const int MAX_VALUE = 100;
-        private const int MIN_VALUE = 0;
+        private const int MIN_VALUE = 1;
         private const int DENOMINATOR_MAX_VALUE = 10;
-        private const int SCREEN_WIDTH = 1920;
+        protected const int SCREEN_WIDTH = 1920;
         private const int SCREEN_HEIGHT = 1080;
         private const float SPRITE_WIDTH = 153.5f;
         private const float SPRITE_HEIGHT = 153.5f;
@@ -198,6 +199,8 @@ namespace LowPop
                 case Difficulty.ComposedExpressions:
                     element = GenerateElementFloatArithmetics();
                     break;
+                default:
+                    throw new ArgumentException("This difficulty is not implemented.");
             }
 
             return element;
@@ -312,8 +315,13 @@ namespace LowPop
             return poppable;
         }
 
-        public List<Poppable> Load()
+        virtual public List<Poppable> Load()
         {
+            if (_elements.Count == 0)
+            {
+                return new List<Poppable>();
+            }
+
             CreatePoppableGrid();
 
             for (int i = 0; i < _elements.Count; i++)

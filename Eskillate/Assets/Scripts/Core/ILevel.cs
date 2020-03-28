@@ -1,4 +1,5 @@
 ﻿using System;
+using Label = LabelHelper.Label;
 
 namespace Core
 {
@@ -6,8 +7,8 @@ namespace Core
     {
         MiniGameId MiniGameId { get; set; }
         int LevelId { get; set; }
-        string Name { get; set; }
-        string Description { get; set; }
+        Label NameLabel { get; set; }
+        Label DescriptionLabel { get; set; }
         int HighScore { get; set; }
     }
 

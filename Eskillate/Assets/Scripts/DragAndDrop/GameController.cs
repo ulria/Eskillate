@@ -2,6 +2,7 @@
 using Core;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Label = LabelHelper.Label;
 
 namespace DragAndDrop
 {
@@ -18,23 +19,34 @@ namespace DragAndDrop
             _shapeArray = FindObjectsOfType<MoveableShape>();
 
             _levels = new List<Level>();
-
-            var highScores = HighScoreHelper.GetHighScores(MiniGameId.DragAndDrop);
+            
             var level1 = new Level()
             {
                 MiniGameId = MiniGameId.DragAndDrop,
                 LevelId = 1,
-                Name = "Level1",
-                Description = "This is level 1.",
-                HighScore = highScores[1]
+                NameLabel = Label.DragAndDropLevel1Name,
+                DescriptionLabel = Label.DragAndDropLevel1Description
             };
 
             _levels.Add(level1);
+
+            LoadLevelHighScores();
 
             LoadHelper.LoadSceneAdditively(this, "LevelSelectionMenu", FillLevelSelectionMenu);
 
             // Add menus
             LoadHelper.LoadGenericMenus(this);
+        }
+
+        private void LoadLevelHighScores()
+        {
+            var highScores = HighScoreHelper.GetHighScores(MiniGameId.LowPop);
+            foreach (var level in _levels)
+            {
+                int highScore;
+                highScores.TryGetValue(level.LevelId, out highScore);
+                level.HighScore = highScore;
+            }
         }
 
         private void FillLevelSelectionMenu()
@@ -62,10 +74,11 @@ namespace DragAndDrop
                 var scoreGO = levelGO.GetChild(0);
                 scoreGO.GetComponent<TMPro.TextMeshProUGUI>().text = level.HighScore.ToString();
                 var nameGO = levelGO.GetChild(1);
-                nameGO.GetComponent<TMPro.TextMeshProUGUI>().text = level.Name;
+                nameGO.GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(level.NameLabel);
                 var starsGO = levelGO.GetChild(2);
                 var selectButtonGO = levelGO.GetChild(3);
                 selectButtonGO.GetComponent<Button>().onClick.AddListener(delegate { OnLevelSelected(level.LevelId); });
+                selectButtonGO.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(Label.GenericLevelPlayButton);
 
                 levelCountForThisLevelTrio++;
             }

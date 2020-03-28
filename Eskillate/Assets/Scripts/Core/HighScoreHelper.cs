@@ -28,10 +28,11 @@ namespace Core
         {
             var highScores = LoadHighScores();
             var highScore = highScores.LevelHighScores.Where(hs => hs.MiniGameId == miniGameId && hs.LevelId == levelId);
+            // TODO - Add protection if the score does not exist yet. Not sure if this is a good idea, or if we require to change the HighScore file every time we add a level.
             highScore.First().Score = score;
             SaveHighScores();
         }
-
+        
         public static Dictionary<int, int> GetHighScores(MiniGameId miniGameId)
         {
             var dict = new Dictionary<int, int>();

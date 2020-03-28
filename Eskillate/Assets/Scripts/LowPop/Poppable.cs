@@ -45,6 +45,7 @@ namespace LowPop
             textMesh.text = this.Text;
             textMesh.alignment = TMPro.TextAlignmentOptions.Center;
             textMesh.enableWordWrapping = false;
+                                        // Left, Top, Right, Bottom            
             textMesh.margin = new Vector4(10, 0, 10, 0);
 
             textMesh.transform.localPosition = new Vector3(0, 0, 0);

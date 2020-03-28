@@ -2,13 +2,14 @@
 using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
+using Label = LabelHelper.Label;
 
 namespace Core
 {
     public class MiniGame : MonoBehaviour
     {
-        public string Name;
-        public string Description;
+        public Label NameLabel;
+        public Label DescriptionLabel;
         public string LevelSelectionSceneName;
 
         private GameObject MiniGameDescriptionObject;
@@ -51,8 +52,8 @@ namespace Core
 
         private void DisplayDescription()
         {
-            MiniGameNameObject.GetComponent<TMPro.TextMeshProUGUI>().text = Name;
-            MiniGameDescriptionObject.GetComponent<TMPro.TextMeshProUGUI>().text = Description;
+            MiniGameNameObject.GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(NameLabel);
+            MiniGameDescriptionObject.GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(DescriptionLabel);
         }
 
         public void OnLevelSelectionClicked()
