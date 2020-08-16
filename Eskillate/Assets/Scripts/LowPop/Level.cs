@@ -39,6 +39,7 @@ namespace LowPop
         private int _nbSlotsOnHeight;
         private float _slotWidth;
         private float _slotHeight;
+        private GameObject _gameController;
 
         public Level(int nbElements, Difficulty difficulty)
         {
@@ -48,6 +49,8 @@ namespace LowPop
                 var newElement = GenerateElement(difficulty);
                 _elements.Add(newElement);
             }
+
+            _gameController = GameObject.Find("GameController");
         }
 
         private Poppable GenerateNormalElement()
@@ -412,6 +415,32 @@ namespace LowPop
             var y = _slotHeight / 2 + (row * _slotHeight) + -SCREEN_HEIGHT / 2;
 
             return new Vector2(x, y);
+        }
+
+        virtual public bool OnPopped(float valuePopped)
+        {
+            if (_elements.First().Value != valuePopped)
+            {
+                return false;
+            }
+            else
+            {
+                _elements.RemoveAt(0);
+                if (_elements.Count == 0)
+                    LevelCompleted();
+                return true;
+            }
+        }
+
+        private void LevelCompleted()
+        {
+            _gameController.GetComponent<GameController>().LevelCompleted();
+        }
+
+        public Poppable GetNextPoppableToPop()
+        {
+            // The list is ordered so return the first element
+            return _elements.First();
         }
     }
 }

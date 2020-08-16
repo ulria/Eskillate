@@ -44,7 +44,7 @@ namespace Core
                 NameLabel = Label.DragAndDropName,
                 DescriptionLabel = Label.DragAndDropDescription,
                 LevelSelectionSceneName = "DragAndDrop",
-                // TODO - MiniGamePreviewClip = 
+                MiniGamePreviewClip = Resources.Load<VideoClip>("Videos/DragAndDrop/PreviewV1"),
             };
             _miniGames.Add(dragAndDropMG);
             var reproduceShapeMG = new MiniGameInfo()

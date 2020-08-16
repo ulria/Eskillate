@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using Label = LabelHelper.Label;
+using System;
 
 namespace LowPop
 {
@@ -12,6 +13,8 @@ namespace LowPop
         private List<Level> _levels;
         private int _loadedLevelId;
         private List<Poppable> _poppables;
+        private Dictionary<string, Action> _onPoppedCallbacks = new Dictionary<string, Action>();
+        private int _subscriberIndex = 0;
 
         // Start is called before the first frame update
         void Start()
@@ -150,17 +153,21 @@ namespace LowPop
 
         public bool OnPopped(float valuePopped)
         {
-            if (_poppables.First().Value != valuePopped)
+            // Pop it first
+            var res = _levels[_loadedLevelId].OnPopped(valuePopped);
+
+            // if it was the correct one, call all the callbacks that were registered
+            if(res)
             {
-                return false;
+                // Clone the list to avoid infinite loops if someone subscribes in the OnPopped event
+                var clonedOnPoppedCallbacks = new Dictionary<string, Action>(_onPoppedCallbacks);
+                foreach (KeyValuePair<string, Action> callbackPair in clonedOnPoppedCallbacks)
+                {
+                    callbackPair.Value();
+                }
             }
-            else
-            {
-                _poppables.RemoveAt(0);
-                if (_poppables.Count == 0)
-                    LevelCompleted();
-                return true;
-            }
+
+            return res;
         }
 
         public void LevelCompleted()
@@ -168,6 +175,29 @@ namespace LowPop
             Debug.Log("Level Completed");
             var levelCompletionGO = GameObject.FindGameObjectWithTag("LevelCompletionMenu");
             levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(_levels[_loadedLevelId], 100);
+        }
+
+        public Poppable GetNextPoppableToPop()
+        {
+            return _levels[_loadedLevelId].GetNextPoppableToPop();
+        }
+
+        private string GetNextSubscriberId()
+        {
+            return $"subscriber-{_subscriberIndex++}";
+        }
+
+        public string SubscribeToPopping(Action callback)
+        {
+            var subscriberId = GetNextSubscriberId();
+            _onPoppedCallbacks.Add(subscriberId, callback);
+
+            return subscriberId;
+        }
+
+        public void Unsubscribe(string subscriberId)
+        {
+            _onPoppedCallbacks.Remove(subscriberId);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace LowPop
 
         private GameObject _directivesGO;
         private bool _loaded = false;
+        private bool _onMouseDownHappened = false;
 
         public override void Load()
         {
@@ -48,27 +49,25 @@ namespace LowPop
                                                   // Left, Top, Right, Bottom            
             directivesTextMesh.margin = new Vector4(10, 20, 10, 20);
 
+            directivesBackgroundGO.AddComponent<PolygonCollider2D>();
+
+            var mouseHandler = directivesBackgroundGO.AddComponent<MouseHandler>();
+            mouseHandler.AddOnMouseDownEvent(OnClick);
+
             _loaded = true;
         }
 
         public void OnClick()
         {
-            if(_loaded)
-            {
-                _directivesGO.SetActive(false);
+            _directivesGO.SetActive(false);
 
-                // Complete step
-                _tutorialManager.CompleteStep();
-            }
+            // Complete step
+            _tutorialManager.CompleteStep();
         }
 
         public override void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Debug.Log("Clicked");
-                OnClick();
-            }
+
         }
     }
 }

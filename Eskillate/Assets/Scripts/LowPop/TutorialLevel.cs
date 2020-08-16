@@ -31,6 +31,7 @@ namespace LowPop
                 var x = (poppableIndex + 1) * dist - (SCREEN_WIDTH / 2.0f);
                 var y = -200.0f;
                 poppables[poppableIndex].SetPosition(new Vector2(x, y));
+                poppables[poppableIndex].SetPoppingPrevented(true);
             }
 
             return poppables;

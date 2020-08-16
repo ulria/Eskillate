@@ -60,6 +60,11 @@ namespace LowPop
         {
             _poppableGameObject.transform.localPosition = new Vector3(position.x, position.y, 0);
         }
+
+        public void SetPoppingPrevented(bool poppingPrevented)
+        {
+            _poppableGameObject.GetComponent<PoppableScript>().SetPoppingPrevented(poppingPrevented);
+        }
     }
 
     class PoppableComparer : IComparer<Poppable>
