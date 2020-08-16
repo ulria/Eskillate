@@ -10,11 +10,11 @@ namespace LowPop
         {
             FIRST_POPPED,
             SECOND_POPPED,
-            THIRD_POPPED,
             DONE
         }
 
         private GameObject _directivesGO;
+        private GameObject _directivesTextGO;
         private bool _loaded = false;
         private TutorialSubStep _state = TutorialSubStep.FIRST_POPPED;
         private GameController _gameController;
@@ -27,6 +27,9 @@ namespace LowPop
         public override void Load()
         {
             Debug.Log("RepeatFindLowestTutorialStep loaded.");
+
+            _directivesTexts.Add(LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives1));
+            _directivesTexts.Add(LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives2));
 
             // Display generic consignes
             var middlegroundGO = GameObject.Find("1-Middleground");
@@ -46,11 +49,11 @@ namespace LowPop
             sr.material.SetColor("_SecondColor", new Color(120f / 255f, 120f / 255f, 120f / 255f, 1));
             sr.material.SetFloat("_Opacity", 0.6f);
 
-            var directivesTextGO = new GameObject("directivesTextGO");
-            directivesTextGO.transform.parent = directivesBackgroundGO.transform;
-            var directivesTextMesh = directivesTextGO.AddComponent<TMPro.TextMeshPro>();
-            directivesTextMesh.text = LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives1);
-            var directivesTextGORect = directivesTextGO.GetComponent<RectTransform>();
+            _directivesTextGO = new GameObject("directivesTextGO");
+            _directivesTextGO.transform.parent = directivesBackgroundGO.transform;
+            var directivesTextMesh = _directivesTextGO.AddComponent<TMPro.TextMeshPro>();
+            directivesTextMesh.text = _directivesTexts[(int)_state];
+            var directivesTextGORect = _directivesTextGO.GetComponent<RectTransform>();
             directivesTextGORect.sizeDelta = new Vector2(155, 155);
             directivesTextGORect.localScale = new Vector3(1, 1, 1);
             directivesTextMesh.fontSizeMin = 100;
@@ -66,11 +69,16 @@ namespace LowPop
             _gameController = gameControllerGO.GetComponent<GameController>();
             WaitForNextLowest();
 
-            _directivesTexts.Add(LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives1));
-            _directivesTexts.Add(LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives2));
-            _directivesTexts.Add(LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives3));
-
             _loaded = true;
+        }
+        
+        public override void Reload()
+        {
+            _directivesGO.SetActive(true);
+
+            _state = TutorialSubStep.FIRST_POPPED;
+
+            WaitForNextLowest();
         }
 
         private void WaitForNextLowest()
@@ -81,10 +89,16 @@ namespace LowPop
             lowestPoppable.SetPoppingPrevented(false);
             // When popped, trigger OnPopped
             _subscriberId = _gameController.SubscribeToPopping(OnPopped);
+            // Display next directives
+            var directivesTextMesh = _directivesTextGO.GetComponent<TMPro.TextMeshPro>();
+            directivesTextMesh.text = _directivesTexts[(int)_state];
         }
 
         public void OnPopped()
         {
+            // Unsubscribe to the previous Poppable.OnPopped()
+            _gameController.Unsubscribe(_subscriberId);
+
             var nextState = _state + 1;
             if(nextState == TutorialSubStep.DONE)
             {
@@ -95,8 +109,7 @@ namespace LowPop
             }
             else
             {
-                // Unsubscribe to the previous Poppable.OnPopped()
-                _gameController.Unsubscribe(_subscriberId);
+                _state = nextState;
                 WaitForNextLowest();
             }
         }

@@ -17,7 +17,8 @@ namespace LowPop
             ComposedExpressions
         }
 
-        protected List<Poppable> _elements;
+        private List<Poppable> _elements;
+        protected List<Poppable> _activeElements = new List<Poppable>();
 
         public MiniGameId MiniGameId { get; set; }
         public int LevelId { get; set; }
@@ -320,37 +321,53 @@ namespace LowPop
 
         virtual public List<Poppable> Load()
         {
-            if (_elements.Count == 0)
+            _activeElements = new List<Poppable>(_elements);
+            if (_activeElements.Count == 0)
             {
                 return new List<Poppable>();
             }
 
             CreatePoppableGrid();
 
-            for (int i = 0; i < _elements.Count; i++)
+            for (int i = 0; i < _activeElements.Count; i++)
             {
-                _elements[i].Load(i);
+                _activeElements[i].Load(i);
                 var position = AssignPoppablePosition();
-                _elements[i].SetPosition(position);
+                _activeElements[i].SetPosition(position);
             }
 
             var poppableComparer = new PoppableComparer();
-            _elements.Sort(poppableComparer);
+            _activeElements.Sort(poppableComparer);
 
-            return new List<Poppable>(_elements);
+            return _activeElements;
         }
 
         public void Unload()
         {
-            foreach(var element in _elements)
+            foreach(var element in _activeElements)
             {
                 element.Unload();
             }
         }
 
-        public List<Poppable> Reload()
+        virtual public List<Poppable> Reload()
         {
-            return new List<Poppable>(_elements);
+            // Redisplay the poppables
+            var poppableGameObjects = GameObject.FindGameObjectsWithTag("Poppable");
+            foreach (var poppableGameObject in poppableGameObjects)
+            {
+                var renderers = poppableGameObject.GetComponentsInChildren<Renderer>();
+                foreach (var renderer in renderers)
+                {
+                    renderer.enabled = true;
+                }
+            }
+
+            // Return a new list of the poppables
+            _activeElements = new List<Poppable>(_elements);
+            var poppableComparer = new PoppableComparer();
+            _activeElements.Sort(poppableComparer);
+            return _activeElements;
         }
 
         private void CreatePoppableGrid()
@@ -419,14 +436,21 @@ namespace LowPop
 
         virtual public bool OnPopped(float valuePopped)
         {
-            if (_elements.First().Value != valuePopped)
+            if (_activeElements.Count < 1)
             {
+                // No more poppables left, so the user clicked an already popped one
+                return false;
+            }
+
+            if (_activeElements.First().Value != valuePopped)
+            {
+                // The user clicked the wrong one
                 return false;
             }
             else
             {
-                _elements.RemoveAt(0);
-                if (_elements.Count == 0)
+                _activeElements.RemoveAt(0);
+                if (_activeElements.Count == 0)
                     LevelCompleted();
                 return true;
             }
@@ -440,7 +464,7 @@ namespace LowPop
         public Poppable GetNextPoppableToPop()
         {
             // The list is ordered so return the first element
-            return _elements.First();
+            return _activeElements.First();
         }
     }
 }

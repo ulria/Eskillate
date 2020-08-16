@@ -9,7 +9,6 @@ namespace LowPop
 
         private GameObject _directivesGO;
         private bool _loaded = false;
-        private bool _onMouseDownHappened = false;
 
         public override void Load()
         {
@@ -55,6 +54,11 @@ namespace LowPop
             mouseHandler.AddOnMouseDownEvent(OnClick);
 
             _loaded = true;
+        }
+
+        public override void Reload()
+        {
+            _directivesGO.SetActive(true);
         }
 
         public void OnClick()

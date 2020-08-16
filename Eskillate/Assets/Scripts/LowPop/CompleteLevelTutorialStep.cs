@@ -11,6 +11,13 @@ namespace LowPop
             _tutorialManager.CompleteStep();
         }
 
+        public override void Reload()
+        {
+            Debug.Log("CompleteLevelTutorialStep reloaded.");
+
+            _tutorialManager.CompleteStep();
+        }
+
         public override void Update()
         {
             

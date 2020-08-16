@@ -140,15 +140,6 @@ namespace LowPop
         public void RestartLevel()
         {
             _poppables = _levels[_loadedLevelId].Reload();
-            var poppableGameObjects = GameObject.FindGameObjectsWithTag("Poppable");
-            foreach(var poppableGameObject in poppableGameObjects)
-            {
-                var renderers = poppableGameObject.GetComponentsInChildren<Renderer>();
-                foreach(var renderer in renderers)
-                {
-                    renderer.enabled = true;
-                }
-            }
         }
 
         public bool OnPopped(float valuePopped)

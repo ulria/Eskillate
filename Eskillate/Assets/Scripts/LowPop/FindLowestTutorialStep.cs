@@ -64,6 +64,17 @@ namespace LowPop
             _loaded = true;
         }
 
+        public override void Reload()
+        {
+            _directivesGO.SetActive(true);
+
+            var lowestPoppable = _gameController.GetNextPoppableToPop();
+            // SetPreventPopping(false);
+            lowestPoppable.SetPoppingPrevented(false);
+            // When popped, trigger stepCompleted
+            _subscriberId = _gameController.SubscribeToPopping(OnPopped);
+        }
+
         public void OnPopped()
         {
             _directivesGO.SetActive(false);
