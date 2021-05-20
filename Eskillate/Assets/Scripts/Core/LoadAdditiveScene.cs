@@ -24,11 +24,7 @@ namespace Core
 
         public static void LoadScene(MonoBehaviour mono, string sceneName, Action callback)
         {
-            var sceneLoadedCallback = new SceneLoadedCallback()
-            {
-                Callback = callback
-            };
-            mono.StartCoroutine(LoadAdditiveScene.LoadAsync(sceneName, sceneLoadedCallback));
+            mono.StartCoroutine(LoadAdditiveScene.LoadAsync(sceneName, callback));
         }
 
         private static void LoadLevelCompletionMenu(MonoBehaviour mono)
@@ -68,16 +64,6 @@ namespace Core
 
                 callback();
             }
-
-            internal static IEnumerator LoadAsync(string scene, SceneLoadedCallback callbackObj)
-            {
-                return LoadAsync(scene, callbackObj.Callback);
-            }
-        }
-
-        private class SceneLoadedCallback
-        {
-            internal Action Callback;
         }
     }
 }
