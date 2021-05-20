@@ -17,6 +17,16 @@ namespace Core
             Debug.Log("Finished loading Scene: LevelCompletionMenu");
         }
 
+        public static void LoadSceneAdditively(MonoBehaviour mono, string sceneName, Action callback)
+        {
+            mono.StartCoroutine(LoadAdditiveScene.LoadAsync(sceneName, callback));
+        }
+
+        public static void LoadScene(MonoBehaviour mono, string sceneName, Action callback)
+        {
+            mono.StartCoroutine(LoadAdditiveScene.LoadAsync(sceneName, callback));
+        }
+
         private static void LoadLevelCompletionMenu(MonoBehaviour mono)
         {
             // Add level completion menu

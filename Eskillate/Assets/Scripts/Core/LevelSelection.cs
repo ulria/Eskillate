@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Core
 {
@@ -14,6 +15,11 @@ namespace Core
         void Update()
         {
 
+        }
+
+        public void OnBackToMainMenuClicked()
+        {
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }

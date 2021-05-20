@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Core/LevelCompletionMenu.unity
     guid: 45be18cc20f978443a843d6f5a305101
+  - enabled: 1
+    path: Assets/Scenes/Core/LevelSelectionMenu.unity
+    guid: b1af4f4f08de09f4bb3567d702ab75ce
   m_configObjects: {}

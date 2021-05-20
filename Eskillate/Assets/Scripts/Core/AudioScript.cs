@@ -1,39 +1,42 @@
 ﻿using UnityEngine;
 
-public class AudioScript : MonoBehaviour
+namespace Core
 {
-    public AudioClip SuccessfulClip;
-    public AudioClip FailClip;
-    public AudioSource Source;
-
-    // Start is called before the first frame update
-    void Start()
+    public class AudioScript : MonoBehaviour
     {
-        var volumeRatio = PlayerPrefs.GetFloat("VolumeRatio", 1.0f);
-        Source.volume *= volumeRatio;
-    }
+        public AudioClip SuccessfulClip;
+        public AudioClip FailClip;
+        public AudioSource Source;
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void PlaySuccessful()
-    {
-        if(Source.clip != SuccessfulClip)
+        // Start is called before the first frame update
+        void Start()
         {
-            Source.clip = SuccessfulClip;
+            var volumeRatio = PlayerPrefs.GetFloat("VolumeRatio", 1.0f);
+            Source.volume *= volumeRatio;
         }
-        Source.Play();
-    }
 
-    public void PlayFail()
-    {
-        if (Source.clip != FailClip)
+        // Update is called once per frame
+        void Update()
         {
-            Source.clip = FailClip;
+
         }
-        Source.Play();
+
+        public void PlaySuccessful()
+        {
+            if (Source.clip != SuccessfulClip)
+            {
+                Source.clip = SuccessfulClip;
+            }
+            Source.Play();
+        }
+
+        public void PlayFail()
+        {
+            if (Source.clip != FailClip)
+            {
+                Source.clip = FailClip;
+            }
+            Source.Play();
+        }
     }
 }
