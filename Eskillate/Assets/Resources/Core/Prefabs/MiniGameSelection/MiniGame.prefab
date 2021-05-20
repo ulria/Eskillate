@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3675453323645041955}
   - component: {fileID: 3675453323645041956}
   m_Layer: 5
-  m_Name: Drag And Drop
+  m_Name: MiniGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: aaa2cc4def1ed5d4a80d3256bfd16ef7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1253732a55067d64aa5ba443838ce21a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -88,8 +88,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35453423becd764c8b520e281fe9d80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Drag And Drop
-  Description: You need to drag and drop the shapes on the target of the same shape.
+  NameLabel: 0
+  DescriptionLabel: 0
   LevelSelectionSceneName: DragAndDrop
   MiniGamePreviewClip: {fileID: 32900000, guid: 3adc55a75cf75d344a14d7fdb86eb52f,
     type: 3}
