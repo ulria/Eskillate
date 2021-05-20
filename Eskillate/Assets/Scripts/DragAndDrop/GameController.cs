@@ -89,7 +89,7 @@ namespace DragAndDrop
                 levelCountForThisLevelTrio++;
             }
 
-            // Set Y pos to 1 to be at scrolled to the top
+            // Set Y pos to 1 to be scrolled to the top
             scrollListContent.transform.parent.transform.parent.GetComponent<ScrollRect>().normalizedPosition = new Vector2(0, 1);
         }
 
