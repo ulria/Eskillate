@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Label = LabelHelper.Label;
 
 namespace LowPop
 {
@@ -17,17 +18,18 @@ namespace LowPop
         }
 
         private List<Poppable> _elements;
+        protected List<Poppable> _activeElements = new List<Poppable>();
 
         public MiniGameId MiniGameId { get; set; }
         public int LevelId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public Label NameLabel { get; set; }
+        public Label DescriptionLabel { get; set; }
         public int HighScore { get; set; }
 
         private const int MAX_VALUE = 100;
-        private const int MIN_VALUE = 0;
+        private const int MIN_VALUE = 1;
         private const int DENOMINATOR_MAX_VALUE = 10;
-        private const int SCREEN_WIDTH = 1920;
+        protected const int SCREEN_WIDTH = 1920;
         private const int SCREEN_HEIGHT = 1080;
         private const float SPRITE_WIDTH = 153.5f;
         private const float SPRITE_HEIGHT = 153.5f;
@@ -38,6 +40,7 @@ namespace LowPop
         private int _nbSlotsOnHeight;
         private float _slotWidth;
         private float _slotHeight;
+        private GameObject _gameController;
 
         public Level(int nbElements, Difficulty difficulty)
         {
@@ -47,6 +50,8 @@ namespace LowPop
                 var newElement = GenerateElement(difficulty);
                 _elements.Add(newElement);
             }
+
+            _gameController = GameObject.Find("GameController");
         }
 
         private Poppable GenerateNormalElement()
@@ -198,6 +203,8 @@ namespace LowPop
                 case Difficulty.ComposedExpressions:
                     element = GenerateElementFloatArithmetics();
                     break;
+                default:
+                    throw new ArgumentException("This difficulty is not implemented.");
             }
 
             return element;
@@ -312,34 +319,55 @@ namespace LowPop
             return poppable;
         }
 
-        public List<Poppable> Load()
+        virtual public List<Poppable> Load()
         {
+            _activeElements = new List<Poppable>(_elements);
+            if (_activeElements.Count == 0)
+            {
+                return new List<Poppable>();
+            }
+
             CreatePoppableGrid();
 
-            for (int i = 0; i < _elements.Count; i++)
+            for (int i = 0; i < _activeElements.Count; i++)
             {
-                _elements[i].Load(i);
+                _activeElements[i].Load(i);
                 var position = AssignPoppablePosition();
-                _elements[i].SetPosition(position);
+                _activeElements[i].SetPosition(position);
             }
 
             var poppableComparer = new PoppableComparer();
-            _elements.Sort(poppableComparer);
+            _activeElements.Sort(poppableComparer);
 
-            return new List<Poppable>(_elements);
+            return _activeElements;
         }
 
         public void Unload()
         {
-            foreach(var element in _elements)
+            foreach(var element in _activeElements)
             {
                 element.Unload();
             }
         }
 
-        public List<Poppable> Reload()
+        virtual public List<Poppable> Reload()
         {
-            return new List<Poppable>(_elements);
+            // Redisplay the poppables
+            var poppableGameObjects = GameObject.FindGameObjectsWithTag("Poppable");
+            foreach (var poppableGameObject in poppableGameObjects)
+            {
+                var renderers = poppableGameObject.GetComponentsInChildren<Renderer>();
+                foreach (var renderer in renderers)
+                {
+                    renderer.enabled = true;
+                }
+            }
+
+            // Return a new list of the poppables
+            _activeElements = new List<Poppable>(_elements);
+            var poppableComparer = new PoppableComparer();
+            _activeElements.Sort(poppableComparer);
+            return _activeElements;
         }
 
         private void CreatePoppableGrid()
@@ -404,6 +432,39 @@ namespace LowPop
             var y = _slotHeight / 2 + (row * _slotHeight) + -SCREEN_HEIGHT / 2;
 
             return new Vector2(x, y);
+        }
+
+        virtual public bool OnPopped(float valuePopped)
+        {
+            if (_activeElements.Count < 1)
+            {
+                // No more poppables left, so the user clicked an already popped one
+                return false;
+            }
+
+            if (_activeElements.First().Value != valuePopped)
+            {
+                // The user clicked the wrong one
+                return false;
+            }
+            else
+            {
+                _activeElements.RemoveAt(0);
+                if (_activeElements.Count == 0)
+                    LevelCompleted();
+                return true;
+            }
+        }
+
+        private void LevelCompleted()
+        {
+            _gameController.GetComponent<GameController>().LevelCompleted();
+        }
+
+        public Poppable GetNextPoppableToPop()
+        {
+            // The list is ordered so return the first element
+            return _activeElements.First();
         }
     }
 }

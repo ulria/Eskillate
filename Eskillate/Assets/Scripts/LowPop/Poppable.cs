@@ -45,6 +45,7 @@ namespace LowPop
             textMesh.text = this.Text;
             textMesh.alignment = TMPro.TextAlignmentOptions.Center;
             textMesh.enableWordWrapping = false;
+                                        // Left, Top, Right, Bottom            
             textMesh.margin = new Vector4(10, 0, 10, 0);
 
             textMesh.transform.localPosition = new Vector3(0, 0, 0);
@@ -58,6 +59,11 @@ namespace LowPop
         public void SetPosition(Vector2 position)
         {
             _poppableGameObject.transform.localPosition = new Vector3(position.x, position.y, 0);
+        }
+
+        public void SetPoppingPrevented(bool poppingPrevented)
+        {
+            _poppableGameObject.GetComponent<PoppableScript>().SetPoppingPrevented(poppingPrevented);
         }
     }
 

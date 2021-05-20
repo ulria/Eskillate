@@ -31,9 +31,9 @@ namespace Core
             // Set the level info and the score in the fields
             _levelCompletionMenu.SetActive(true);
             var levelNameGO = GameObject.FindGameObjectWithTag("LevelName");
-            levelNameGO.GetComponent<TMPro.TextMeshProUGUI>().text = levelInfo.Name;
+            levelNameGO.GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(levelInfo.NameLabel);
             var levelDescriptionGO = GameObject.FindGameObjectWithTag("LevelDescription");
-            levelDescriptionGO.GetComponent<TMPro.TextMeshProUGUI>().text = levelInfo.Description;
+            levelDescriptionGO.GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(levelInfo.DescriptionLabel);
             var scoreGO = GameObject.FindGameObjectWithTag("Score");
             scoreGO.GetComponent<TMPro.TextMeshProUGUI>().text = score.ToString("0");
             
