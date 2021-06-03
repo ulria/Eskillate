@@ -163,7 +163,7 @@ namespace LowPop
 
         public void LevelCompleted()
         {
-            Debug.Log("Level Completed");
+            Debug.Log($"{System.DateTime.Now} Level Completed");
             var levelCompletionGO = GameObject.FindGameObjectWithTag("LevelCompletionMenu");
             levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(_levels[_loadedLevelId], 100);
         }
