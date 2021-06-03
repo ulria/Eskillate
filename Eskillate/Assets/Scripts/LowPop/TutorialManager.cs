@@ -8,7 +8,6 @@ namespace LowPop
         private GameObject _gameControllerGO;
         private List<TutorialStep> _steps = new List<TutorialStep>();
         private int _currentStepIndex = 0;
-        private bool _isReloaded = false;
 
         public TutorialManager()
         {
@@ -26,21 +25,14 @@ namespace LowPop
         private void ChangeStep()
         {
             var nextStepIndex = _currentStepIndex + 1;
-            if(nextStepIndex >= _steps.Count)
+            if (nextStepIndex >= _steps.Count)
             {
                 OnTutorialComplete();
             }
             else
             {
                 _currentStepIndex = nextStepIndex;
-                if (_isReloaded)
-                {
-                    _steps[nextStepIndex].Reload();
-                }
-                else
-                {
-                    _steps[nextStepIndex].Load();
-                }
+                _steps[nextStepIndex].Load();
             }
         }
 
@@ -71,9 +63,13 @@ namespace LowPop
 
         public void Reload()
         {
+            for (var step_index = 0; step_index < _steps.Count; step_index++)
+            {
+                _steps[step_index].Unload();
+            }
+
             _currentStepIndex = 0;
-            _isReloaded = true;
-            _steps[_currentStepIndex].Reload();
+            _steps[_currentStepIndex].Load();
         }
 
         public void Update()

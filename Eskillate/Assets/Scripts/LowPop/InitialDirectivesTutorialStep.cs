@@ -9,11 +9,23 @@ namespace LowPop
 
         private GameObject _directivesGO;
         private bool _loaded = false;
+        private bool _wasLoaded = false;
 
         public override void Load()
         {
-            Debug.Log("InitialDirectivesTutorialStep loaded.");
-            
+            Debug.Log($"{System.DateTime.Now} InitialDirectivesTutorialStep loaded.");
+            if (_wasLoaded)
+            {
+                Reload();
+            }
+            else
+            {
+                InternalLoad();
+            }
+        }
+
+        private void InternalLoad()
+        {            
             // Display generic consignes
             var middlegroundGO = GameObject.Find("1-Middleground");
             _directivesGO = new GameObject("directivesGO");
@@ -54,11 +66,15 @@ namespace LowPop
             mouseHandler.AddOnMouseDownEvent(OnClick);
 
             _loaded = true;
+            _wasLoaded = true;
         }
 
-        public override void Reload()
+        private void Reload()
         {
-            _directivesGO.SetActive(true);
+            if (_directivesGO)
+            {
+                _directivesGO.SetActive(true);
+            }
         }
 
         public void OnClick()
@@ -67,11 +83,22 @@ namespace LowPop
 
             // Complete step
             _tutorialManager.CompleteStep();
+            Debug.Log($"{System.DateTime.Now} Completed InitialDirectivesTutorialStep");
         }
 
         public override void Update()
         {
 
+        }
+
+        public override void Unload()
+        {
+            Debug.Log($"{System.DateTime.Now} InitialDirectivesTutorialStep unloaded.");
+            if (_directivesGO)
+            {
+                _directivesGO.SetActive(false);
+            }
+            _loaded = false;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace LowPop
         private GameObject _directivesGO;
         private GameObject _directivesTextGO;
         private bool _loaded = false;
+        private bool _wasLoaded = false;
         private TutorialSubStep _state = TutorialSubStep.FIRST_POPPED;
         private GameController _gameController;
         private List<string> _directivesTexts = new List<string>();
@@ -26,7 +27,19 @@ namespace LowPop
 
         public override void Load()
         {
-            Debug.Log("RepeatFindLowestTutorialStep loaded.");
+            Debug.Log($"{System.DateTime.Now} RepeatFindLowestTutorialStep loaded.");
+            if (_wasLoaded)
+            {
+                Reload();
+            }
+            else
+            {
+                InternalLoad();
+            }
+        }
+
+        private void InternalLoad()
+        {
 
             _directivesTexts.Add(LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives1));
             _directivesTexts.Add(LabelHelper.ResolveLabel(LabelHelper.Label.LowPopTutorialRepeatFindLowestDirectives2));
@@ -70,11 +83,15 @@ namespace LowPop
             WaitForNextLowest();
 
             _loaded = true;
+            _wasLoaded = true;
         }
         
-        public override void Reload()
+        private void Reload()
         {
-            _directivesGO.SetActive(true);
+            if (_directivesGO)
+            {
+                _directivesGO.SetActive(true);
+            }
 
             _state = TutorialSubStep.FIRST_POPPED;
 
@@ -85,6 +102,9 @@ namespace LowPop
         {
             // Find lowest bubble
             var lowestPoppable = _gameController.GetNextPoppableToPop();
+
+            Debug.Log($"{System.DateTime.Now} Found that lowest poppable was {lowestPoppable.Text}");
+
             // SetPreventPopping(false);
             lowestPoppable.SetPoppingPrevented(false);
             // When popped, trigger OnPopped
@@ -106,9 +126,13 @@ namespace LowPop
 
                 // Complete step
                 _tutorialManager.CompleteStep();
+
+                Debug.Log($"{System.DateTime.Now} Completed RepeatFindLowestTutorialStep");
             }
             else
             {
+                Debug.Log($"{System.DateTime.Now} OnPopped going to next state: {nextState}");
+
                 _state = nextState;
                 WaitForNextLowest();
             }
@@ -117,6 +141,20 @@ namespace LowPop
         public override void Update()
         {
 
+        }
+
+        public override void Unload()
+        {
+            Debug.Log($"{System.DateTime.Now} RepeatFindLowestTutorialStep unloaded.");
+            if (_directivesGO)
+            {
+                _directivesGO.SetActive(false);
+            }
+            if (_gameController)
+            {
+                _gameController.Unsubscribe(_subscriberId);
+            }
+            _loaded = false;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace LowPop
     {
         private GameObject _directivesGO;
         private bool _loaded = false;
+        private bool _wasLoaded = false;
         private GameController _gameController;
         private string _subscriberId;
 
@@ -15,8 +16,19 @@ namespace LowPop
 
         public override void Load()
         {
-            Debug.Log("FindLowestTutorialStep loaded.");
+            Debug.Log($"{System.DateTime.Now} FindLowestTutorialStep loaded.");
+            if (_wasLoaded)
+            {
+                Reload();
+            }
+            else
+            {
+                InternalLoad();
+            }
+        }
 
+        private void InternalLoad()
+        {
             // Display generic consignes
             var middlegroundGO = GameObject.Find("1-Middleground");
             _directivesGO = new GameObject("directivesGO");
@@ -62,11 +74,15 @@ namespace LowPop
             _subscriberId = _gameController.SubscribeToPopping(OnPopped);
 
             _loaded = true;
+            _wasLoaded = true;
         }
 
-        public override void Reload()
+        private void Reload()
         {
-            _directivesGO.SetActive(true);
+            if (_directivesGO)
+            {
+                _directivesGO.SetActive(true);
+            }
 
             var lowestPoppable = _gameController.GetNextPoppableToPop();
             // SetPreventPopping(false);
@@ -82,12 +98,28 @@ namespace LowPop
             // Complete step
             _tutorialManager.CompleteStep();
 
+            Debug.Log($"{System.DateTime.Now} Completed FindLowestTutorialStep");
+
             _gameController.Unsubscribe(_subscriberId);
         }
 
         public override void Update()
         {
             
+        }
+
+        public override void Unload()
+        {
+            Debug.Log($"{System.DateTime.Now} FindLowestTutorialStep unloaded.");
+            if (_directivesGO)
+            {
+                _directivesGO.SetActive(false);
+            }
+            if (_gameController)
+            {
+                _gameController.Unsubscribe(_subscriberId);
+            }
+            _loaded = false;
         }
     }
 }

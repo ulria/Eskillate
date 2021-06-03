@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseHandler : MonoBehaviour
 {
@@ -20,7 +21,13 @@ public class MouseHandler : MonoBehaviour
 
     private void OnMouseDown()
     {
-        foreach(var action in _onMouseDownEvents)
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            // Clicked on UI element that is on top of this object
+            return;
+        }
+
+        foreach (var action in _onMouseDownEvents)
         {
             action();
         }
