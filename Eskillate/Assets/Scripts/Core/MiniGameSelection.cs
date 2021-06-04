@@ -60,7 +60,7 @@ namespace Core
                 MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "ReproduceShape"),
                 ImagePath = BASE_IMAGE_PATH + "ReproduceShape"
             };
-            _miniGames.Add(reproduceShapeMG);
+            //_miniGames.Add(reproduceShapeMG);
             var reproduceSequenceMG = new MiniGameInfo()
             {
                 NameLabel = Label.ReproduceSequenceName,
@@ -69,7 +69,7 @@ namespace Core
                 MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "ReproduceSequence"),
                 ImagePath = BASE_IMAGE_PATH + "ReproduceSequence"
             };
-            _miniGames.Add(reproduceSequenceMG);
+            //_miniGames.Add(reproduceSequenceMG);
             var hideAndSeekMG = new MiniGameInfo()
             {
                 NameLabel = Label.HideAndSeekName,
@@ -78,7 +78,7 @@ namespace Core
                 MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "HideAndSeek"),
                 ImagePath = BASE_IMAGE_PATH + "HideAndSeek"
             };
-            _miniGames.Add(hideAndSeekMG);
+            //_miniGames.Add(hideAndSeekMG);
             var lowPopMG = new MiniGameInfo()
             {
                 NameLabel = Label.LowPopName,
@@ -96,7 +96,7 @@ namespace Core
                 MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "PerilousPath"),
                 ImagePath = BASE_IMAGE_PATH + "PerilousPath"
             };
-            _miniGames.Add(perilousPathMG);
+            //_miniGames.Add(perilousPathMG);
             var trueColorMG = new MiniGameInfo()
             {
                 NameLabel = Label.TrueColorName,
@@ -105,7 +105,7 @@ namespace Core
                 MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "TrueColor"),
                 ImagePath = BASE_IMAGE_PATH + "TrueColor"
             };
-            _miniGames.Add(trueColorMG);
+            //_miniGames.Add(trueColorMG);
             var sortMG = new MiniGameInfo()
             {
                 NameLabel = Label.SortName,
@@ -114,7 +114,7 @@ namespace Core
                 MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "Sort"),
                 ImagePath = BASE_IMAGE_PATH + "Sort"
             };
-            _miniGames.Add(sortMG);
+            //_miniGames.Add(sortMG);
             foreach(var mg in _miniGames)
             {
                 var prefab = Instantiate(Resources.Load("Core\\Prefabs\\MiniGameSelection\\MiniGame")) as GameObject;
