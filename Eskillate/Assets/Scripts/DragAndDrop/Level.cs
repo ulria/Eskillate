@@ -8,6 +8,11 @@ public class Level : ILevel
     public Label NameLabel { get; set; }
     public Label DescriptionLabel { get; set; }
     public int HighScore { get; set; }
+    virtual public Stars GetStarsCount()
+    {
+        var scoreInStars = HighScore / 33.0f;
+        return (Stars)scoreInStars;
+    }
 
     public void Load()
     {}

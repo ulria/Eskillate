@@ -76,6 +76,7 @@ namespace DragAndDrop
                 var nameGO = levelGO.GetChild(1);
                 nameGO.GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(level.NameLabel);
                 var starsGO = levelGO.GetChild(2);
+                starsGO.GetComponent<Image>().sprite = HighScoreHelper.LoadStarsSprite(level.GetStarsCount());
                 var selectButtonGO = levelGO.GetChild(3);
                 selectButtonGO.GetComponent<Button>().onClick.AddListener(delegate { OnLevelSelected(level.LevelId); });
                 selectButtonGO.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = LabelHelper.ResolveLabel(Label.GenericLevelPlayButton);

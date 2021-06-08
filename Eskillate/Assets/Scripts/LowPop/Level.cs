@@ -466,5 +466,11 @@ namespace LowPop
             // The list is ordered so return the first element
             return _activeElements.First();
         }
+
+        virtual public Stars GetStarsCount()
+        {
+            var score = HighScore / 33.0f;
+            return (Stars)score;
+        }
     }
 }
