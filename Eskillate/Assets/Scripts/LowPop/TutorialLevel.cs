@@ -78,5 +78,11 @@ namespace LowPop
             }
             return poppables;
         }
+
+        public override Stars GetStarsCount()
+        {
+            var scoreInStars = HighScore / 33.0f;
+            return (Stars)scoreInStars;
+        }
     }
 }

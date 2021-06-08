@@ -10,6 +10,7 @@ namespace Core
         Label NameLabel { get; set; }
         Label DescriptionLabel { get; set; }
         int HighScore { get; set; }
+        Stars GetStarsCount();
     }
 
     [Serializable]

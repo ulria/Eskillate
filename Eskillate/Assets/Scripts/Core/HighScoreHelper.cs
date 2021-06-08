@@ -3,12 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace Core
 {
     public class HighScoreHelper
     {
         private static HighScores _highScores { get; set; }
+        private static List<string> _starsSpritePaths = new List<string>() {
+            "Core\\Score\\0stars",
+            "Core\\Score\\1star",
+            "Core\\Score\\2stars",
+            "Core\\Score\\3stars"
+        };
 
         [Serializable]
         private class HighScores
@@ -75,6 +82,12 @@ namespace Core
             string path = "Assets/Resources/Core/HighScores.json";
 
             File.WriteAllText(path, content);
+        }
+
+        public static Sprite LoadStarsSprite(Stars score)
+        {
+            var clampedScore = Mathf.Clamp((int)score, (int)Stars.NONE, (int)Stars.THREE);
+            return Resources.Load<Sprite>(_starsSpritePaths[clampedScore]);
         }
     }
 }
