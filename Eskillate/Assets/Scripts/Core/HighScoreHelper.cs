@@ -86,7 +86,7 @@ namespace Core
 
         public static Sprite LoadStarsSprite(Stars score)
         {
-            var clampedScore = Mathf.Clamp((int)score, 0, 3);
+            var clampedScore = Mathf.Clamp((int)score, (int)Stars.NONE, (int)Stars.THREE);
             return Resources.Load<Sprite>(_starsSpritePaths[clampedScore]);
         }
     }
