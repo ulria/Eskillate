@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static Core.ResourcesHelper;
 
 namespace Core
 {
@@ -11,10 +12,10 @@ namespace Core
     {
         private static HighScores _highScores { get; set; }
         private static List<string> _starsSpritePaths = new List<string>() {
-            "Core\\Score\\0stars",
-            "Core\\Score\\1star",
-            "Core\\Score\\2stars",
-            "Core\\Score\\3stars"
+            Resource.Core.Score.star0,
+            Resource.Core.Score.star1,
+            Resource.Core.Score.star2,
+            Resource.Core.Score.star3
         };
 
         [Serializable]

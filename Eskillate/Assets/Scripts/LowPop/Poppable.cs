@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using static Core.ResourcesHelper;
 
 namespace LowPop
 {
@@ -10,9 +11,6 @@ namespace LowPop
 
         private GameObject _poppableGameObject;
 
-        private const string SPRITE_PATH = "LowPop/Circle1";
-        private const string MATERIAL_PATH = "Core/GradientShapeMaterial";
-
         public void Load(int poppableIndex)
         {
             GameObject foreground = GameObject.Find("2-Foreground");
@@ -20,8 +18,8 @@ namespace LowPop
             _poppableGameObject.name = $"Poppable{poppableIndex}";
             _poppableGameObject.transform.parent = foreground.transform;
             var sr = _poppableGameObject.AddComponent<SpriteRenderer>() as SpriteRenderer;
-            sr.sprite = Resources.Load<Sprite>(SPRITE_PATH);
-            sr.material = Resources.Load<Material>(MATERIAL_PATH);
+            sr.sprite = Resources.Load<Sprite>(Resource.LowPop.Circle1);
+            sr.material = Resources.Load<Material>(Resource.Core.GradientShapeMaterial);
             _poppableGameObject.AddComponent<RectTransform>();
 
             _poppableGameObject.AddComponent<PoppableScript>().Value = this.Value;
@@ -40,7 +38,7 @@ namespace LowPop
             textMesh.fontSizeMax = 10000;
             textMesh.characterWidthAdjustment = 30;
             textMesh.enableAutoSizing = true;
-            textMesh.fontSharedMaterial = Resources.Load<Material>("Fonts & Materials/LiberationSans SDF - Drop Shadow");
+            textMesh.fontSharedMaterial = Resources.Load<Material>(Resource.FontsAndMaterials.LiberationSansSDFDropShadow);
             textMesh.fontStyle = TMPro.FontStyles.Bold;
             textMesh.text = this.Text;
             textMesh.alignment = TMPro.TextAlignmentOptions.Center;

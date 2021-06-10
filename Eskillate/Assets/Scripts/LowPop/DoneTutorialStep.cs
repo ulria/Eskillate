@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static Core.ResourcesHelper;
 
 namespace LowPop
 {
     public class DoneTutorialStep : TutorialStep
     {
         private GameObject _directivesGO;
-
-        private const string SPRITE_PATH = "LowPop/Square";
-        private const string MATERIAL_PATH = "Core/GradientAlphaMaterial";
 
         private bool _loaded = false;
         private bool _wasLoaded = false;
@@ -39,8 +37,8 @@ namespace LowPop
             directivesBackgroundRectTransform.sizeDelta = new Vector2(155, 155);
             directivesBackgroundRectTransform.localScale = new Vector3(6.5f, 3.25f, 1f);
             var sr = directivesBackgroundGO.AddComponent<SpriteRenderer>();
-            sr.sprite = Resources.Load<Sprite>(SPRITE_PATH);
-            sr.material = Resources.Load<Material>(MATERIAL_PATH);
+            sr.sprite = Resources.Load<Sprite>(Resource.LowPop.Square);
+            sr.material = Resources.Load<Material>(Resource.Core.GradientAlphaMaterial);
 
             sr.material.SetColor("_FirstColor", new Color(50f / 255f, 50f / 255f, 50f / 255f, 1));
             sr.material.SetColor("_SecondColor", new Color(120f / 255f, 120f / 255f, 120f / 255f, 1));

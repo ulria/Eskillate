@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using UnityEngine;
+using static Core.ResourcesHelper;
 
 namespace LowPop
 {
@@ -13,9 +14,6 @@ namespace LowPop
         private GameObject _poppingPreventedMsgGO;
         private Stopwatch _stopWatch = new Stopwatch();
         private bool _poppingPreventedMsgCreated = false;
-
-        private const string SPRITE_PATH = "LowPop/Square";
-        private const string MATERIAL_PATH = "Core/GradientAlphaMaterial";
 
         // Start is called before the first frame update
         void Start()
@@ -76,8 +74,8 @@ namespace LowPop
                 directivesBackgroundRectTransform.sizeDelta = new Vector2(155, 155);
                 directivesBackgroundRectTransform.localScale = new Vector3(3.25f, 1.625f, 1f);
                 var sr = directivesBackgroundGO.AddComponent<SpriteRenderer>();
-                sr.sprite = Resources.Load<Sprite>(SPRITE_PATH);
-                sr.material = Resources.Load<Material>(MATERIAL_PATH);
+                sr.sprite = Resources.Load<Sprite>(Resource.LowPop.Square);
+                sr.material = Resources.Load<Material>(Resource.Core.GradientAlphaMaterial);
 
                 sr.material.SetColor("_FirstColor", new Color(50f / 255f, 50f / 255f, 50f / 255f, 1));
                 sr.material.SetColor("_SecondColor", new Color(120f / 255f, 120f / 255f, 120f / 255f, 1));
