@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using Label = LabelHelper.Label;
 using System.Collections.Generic;
 using UnityEngine.Video;
+using static Core.ResourcesHelper;
 
 namespace Core
 {
@@ -18,9 +19,6 @@ namespace Core
 
     public class MiniGameSelection : MonoBehaviour
     {
-        const string BASE_IMAGE_PATH = "Core/MiniGame/Images/";
-        const string BASE_CLIP_PATH = "Core/MiniGame/Clips/";
-
         private bool isDragging = false;
         private float _elementWidthPlusSpacing = 0.0f;
         private float _scrollRange = 0.0f;
@@ -48,8 +46,8 @@ namespace Core
                 NameLabel = Label.DragAndDropName,
                 DescriptionLabel = Label.DragAndDropDescription,
                 LevelSelectionSceneName = "DragAndDrop",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "DragAndDrop"),
-                ImagePath = BASE_IMAGE_PATH + "DragAndDrop"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.DragAndDrop),
+                ImagePath = Resource.Core.MiniGame.Images.DragAndDrop
             };
             _miniGames.Add(dragAndDropMG);
             var reproduceShapeMG = new MiniGameInfo()
@@ -57,8 +55,8 @@ namespace Core
                 NameLabel = Label.ReproduceShapeName,
                 DescriptionLabel = Label.ReproduceShapeDescription,
                 LevelSelectionSceneName = "ReproduceShape",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "ReproduceShape"),
-                ImagePath = BASE_IMAGE_PATH + "ReproduceShape"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.ReproduceShape),
+                ImagePath = Resource.Core.MiniGame.Images.ReproduceShape
             };
             //_miniGames.Add(reproduceShapeMG);
             var reproduceSequenceMG = new MiniGameInfo()
@@ -66,8 +64,8 @@ namespace Core
                 NameLabel = Label.ReproduceSequenceName,
                 DescriptionLabel = Label.ReproduceSequenceDescription,
                 LevelSelectionSceneName = "ReproduceSequence",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "ReproduceSequence"),
-                ImagePath = BASE_IMAGE_PATH + "ReproduceSequence"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.ReproduceSequence),
+                ImagePath = Resource.Core.MiniGame.Images.ReproduceSequence
             };
             //_miniGames.Add(reproduceSequenceMG);
             var hideAndSeekMG = new MiniGameInfo()
@@ -75,8 +73,8 @@ namespace Core
                 NameLabel = Label.HideAndSeekName,
                 DescriptionLabel = Label.HideAndSeekDescription,
                 LevelSelectionSceneName = "HideAndSeek",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "HideAndSeek"),
-                ImagePath = BASE_IMAGE_PATH + "HideAndSeek"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.HideAndSeek),
+                ImagePath = Resource.Core.MiniGame.Images.HideAndSeek
             };
             //_miniGames.Add(hideAndSeekMG);
             var lowPopMG = new MiniGameInfo()
@@ -84,8 +82,8 @@ namespace Core
                 NameLabel = Label.LowPopName,
                 DescriptionLabel = Label.LowPopDescription,
                 LevelSelectionSceneName = "LowPop",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "LowPop"),
-                ImagePath = BASE_IMAGE_PATH + "LowPop"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.LowPop),
+                ImagePath = Resource.Core.MiniGame.Images.LowPop
             };
             _miniGames.Add(lowPopMG);
             var perilousPathMG = new MiniGameInfo()
@@ -93,8 +91,8 @@ namespace Core
                 NameLabel = Label.PerilousPathName,
                 DescriptionLabel = Label.PerilousPathDescription,
                 LevelSelectionSceneName = "PerilousPath",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "PerilousPath"),
-                ImagePath = BASE_IMAGE_PATH + "PerilousPath"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.PerilousPath),
+                ImagePath = Resource.Core.MiniGame.Images.PerilousPath
             };
             //_miniGames.Add(perilousPathMG);
             var trueColorMG = new MiniGameInfo()
@@ -102,8 +100,8 @@ namespace Core
                 NameLabel = Label.TrueColorName,
                 DescriptionLabel = Label.TrueColorDescription,
                 LevelSelectionSceneName = "TrueColor",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "TrueColor"),
-                ImagePath = BASE_IMAGE_PATH + "TrueColor"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.TrueColor),
+                ImagePath = Resource.Core.MiniGame.Images.TrueColor
             };
             //_miniGames.Add(trueColorMG);
             var sortMG = new MiniGameInfo()
@@ -111,13 +109,13 @@ namespace Core
                 NameLabel = Label.SortName,
                 DescriptionLabel = Label.SortDescription,
                 LevelSelectionSceneName = "Sort",
-                MiniGamePreviewClip = Resources.Load<VideoClip>(BASE_CLIP_PATH + "Sort"),
-                ImagePath = BASE_IMAGE_PATH + "Sort"
+                MiniGamePreviewClip = Resources.Load<VideoClip>(Resource.Core.MiniGame.Clips.Sort),
+                ImagePath = Resource.Core.MiniGame.Images.Sort
             };
             //_miniGames.Add(sortMG);
             foreach(var mg in _miniGames)
             {
-                var prefab = Instantiate(Resources.Load("Core\\Prefabs\\MiniGameSelection\\MiniGame")) as GameObject;
+                var prefab = Instantiate(Resources.Load(Resource.Core.Prefabs.MiniGameSelection.MiniGame)) as GameObject;
                 prefab.transform.SetParent(ScrollListContent.transform, false);
                 var mgComponent = prefab.GetComponent<MiniGame>();
                 mgComponent.NameLabel = mg.NameLabel;

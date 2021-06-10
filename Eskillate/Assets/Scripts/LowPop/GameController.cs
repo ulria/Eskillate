@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.UI;
 using Label = LabelHelper.Label;
 using System;
+using static Core.ResourcesHelper;
 
 namespace LowPop
 {
@@ -87,7 +88,7 @@ namespace LowPop
                 levelCountForThisLevelTrio = levelCountForThisLevelTrio % 3;
                 if (levelCountForThisLevelTrio == 0)
                 {
-                    currentLevelTrio = Instantiate(Resources.Load("Core\\Prefabs\\LevelSelection\\LevelTrio")) as GameObject;
+                    currentLevelTrio = Instantiate(Resources.Load(Resource.Core.Prefabs.LevelSelection.LevelTrio)) as GameObject;
                     currentLevelTrio.transform.SetParent(scrollListContent.transform, false);
                 }
                 var levelGO = currentLevelTrio.transform.GetChild(levelCountForThisLevelTrio);
