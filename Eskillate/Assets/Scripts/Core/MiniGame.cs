@@ -24,6 +24,11 @@ namespace Core
 
         void Start()
         {
+            Init();
+        }
+
+        void Init()
+        {
             MiniGameDescriptionObject = GameObject.Find("MiniGameDescription");
             MiniGameNameObject = GameObject.Find("MiniGameName");
             MiniGamePreviewScreen = GameObject.Find("MiniGamePreviewScreen");
@@ -34,6 +39,8 @@ namespace Core
 
         public void OnSelected()
         {
+            Init();
+
             DisplayVideoPreview();
             DisplayDescription();
         }
