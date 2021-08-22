@@ -25,6 +25,7 @@ namespace LowPop
         public Label NameLabel { get; set; }
         public Label DescriptionLabel { get; set; }
         public int HighScore { get; set; }
+        public int Score { get; set; } = 100;
 
         private const int MAX_VALUE = 100;
         private const int MIN_VALUE = 1;
@@ -352,6 +353,8 @@ namespace LowPop
 
         virtual public List<Poppable> Reload()
         {
+            Score = 100;
+
             // Redisplay the poppables
             var poppableGameObjects = GameObject.FindGameObjectsWithTag("Poppable");
             foreach (var poppableGameObject in poppableGameObjects)
@@ -445,6 +448,7 @@ namespace LowPop
             if (_activeElements.First().Value != valuePopped)
             {
                 // The user clicked the wrong one
+                Score -= 5;
                 return false;
             }
             else
@@ -471,6 +475,26 @@ namespace LowPop
         {
             var score = HighScore / 33.0f;
             return (Stars)score;
+        }
+
+        public TimeSpan GetGracePeriodDelay()
+        {
+            return new TimeSpan(0, 0, 3);
+        }
+
+        public TimeSpan GetExtraTimePerPoppable()
+        {
+            return new TimeSpan(0, 0, 1);
+        }
+
+        public int GetTimePenaltyPerErrorInSeconds()
+        {
+            return 5;
+        }
+
+        public int GetNegativePointsPerSecondPassedAllocatedTime()
+        {
+            return 5;
         }
     }
 }

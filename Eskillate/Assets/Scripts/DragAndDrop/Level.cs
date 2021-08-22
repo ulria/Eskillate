@@ -13,6 +13,7 @@ public class Level : ILevel
         var scoreInStars = HighScore / 33.0f;
         return (Stars)scoreInStars;
     }
+    public int Score { get; set; }
 
     public void Load()
     {}

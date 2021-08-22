@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using Label = LabelHelper.Label;
 using System;
 using static Core.ResourcesHelper;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 namespace LowPop
 {
@@ -16,6 +18,9 @@ namespace LowPop
         private List<Poppable> _poppables;
         private Dictionary<string, Action> _onPoppedCallbacks = new Dictionary<string, Action>();
         private int _subscriberIndex = 0;
+        private ScoreTimer _scoreTimer;
+        private int _timePenalty;
+        private GameObject _timerGO;
 
         // Start is called before the first frame update
         void Start()
@@ -58,6 +63,8 @@ namespace LowPop
 
             // Add menus
             LoadHelper.LoadGenericMenus(this);
+
+            _timerGO = GameObject.Find("TimerGO");
         }
 
         private void LoadLevelHighScores()
@@ -130,18 +137,31 @@ namespace LowPop
         // Update is called once per frame
         void Update()
         {
-
+            if (_scoreTimer != null)
+            {
+                _scoreTimer.Update();
+            }   
         }
 
         public void LoadLevel(int id)
         {
-            _poppables = _levels[id].Load();
+            var level = _levels[id];
+            _poppables = level.Load();
             _loadedLevelId = id;
+
+            _scoreTimer = new ScoreTimer();
+            var allocatedTime = level.GetGracePeriodDelay() + (level.GetExtraTimePerPoppable().Multiply(_poppables.Count));
+            _scoreTimer.SetAllocatedTime(allocatedTime);
+            _scoreTimer.SetTimerGO(_timerGO);
+            _timePenalty = level.GetTimePenaltyPerErrorInSeconds();
+            _scoreTimer.StartTimer();
         }
 
         public void RestartLevel()
         {
             _poppables = _levels[_loadedLevelId].Reload();
+            _scoreTimer.ResetTimer();
+            _scoreTimer.StartTimer();
         }
 
         public bool OnPopped(float valuePopped)
@@ -159,6 +179,10 @@ namespace LowPop
                     callbackPair.Value();
                 }
             }
+            else
+            {
+                _scoreTimer.ApplyTimePenalty(_timePenalty);
+            }
 
             return res;
         }
@@ -167,7 +191,16 @@ namespace LowPop
         {
             Debug.Log($"{System.DateTime.Now} Level Completed");
             var levelCompletionGO = GameObject.FindGameObjectWithTag("LevelCompletionMenu");
-            levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(_levels[_loadedLevelId], 100);
+            var level = _levels[_loadedLevelId];
+            _scoreTimer.StopTimer();
+            var remaining = _scoreTimer.GetTimeRemaining();
+            var penaltyFactor = Mathf.CeilToInt((float)-remaining.TotalSeconds);
+            penaltyFactor = penaltyFactor < 0 ? 0 : penaltyFactor;
+            Debug.Log($"{remaining.TotalSeconds} seconds remaing, nbTimesMissed {penaltyFactor}");
+            var negativePointsTime = level.GetNegativePointsPerSecondPassedAllocatedTime() * penaltyFactor;
+            var scoreMinusPenalty = level.Score - negativePointsTime;
+            var finalScore = scoreMinusPenalty < 0 ? 0 : scoreMinusPenalty; 
+            levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(level, finalScore);
         }
 
         public Poppable GetNextPoppableToPop()

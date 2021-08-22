@@ -141,7 +141,7 @@ namespace DragAndDrop
         {
             Debug.Log("Level Completed");
             var levelCompletionGO = GameObject.FindGameObjectWithTag("LevelCompletionMenu");
-            levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(_levels[_loadedLevelId], 100);
+            levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(_levels[_loadedLevelId], _levels[_loadedLevelId].Score);
         }
     }
 }
