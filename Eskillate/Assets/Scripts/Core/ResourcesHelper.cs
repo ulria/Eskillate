@@ -67,6 +67,10 @@ namespace Core
                         public static string LevelTrio = Path + "\\LevelTrio";
                     }
                 }
+                public struct Labels
+                {
+                    public static string Path = Core.Path + "\\Labels";
+                }
                 public static string GradientAlphaMaterial = Path + "\\GradientAlphaMaterial";
                 public static string GradientShapeMaterial = Path + "\\GradientShapeMaterial";
             }
@@ -80,6 +84,11 @@ namespace Core
             {
                 public static string Path = "Fonts & Materials";
                 public static string LiberationSansSDFDropShadow = Path + "\\LiberationSans SDF - Drop Shadow";
+            }
+            public struct PersistentData
+            {
+                public static string Path = Application.persistentDataPath;
+                public static string HighScores = Path + "\\HighScores.json";
             }
         }
     }
