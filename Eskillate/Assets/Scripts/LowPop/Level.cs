@@ -448,7 +448,8 @@ namespace LowPop
             if (_activeElements.First().Value != valuePopped)
             {
                 // The user clicked the wrong one
-                Score -= 5;
+                // no point penalty, just less time to complete level
+                //Score -= 5;
                 return false;
             }
             else

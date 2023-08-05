@@ -21,6 +21,8 @@ namespace LowPop
         private ScoreTimer _scoreTimer;
         private int _timePenalty;
         private GameObject _timerGO;
+        private int _nbCorrectPops = 0;
+        private int _nbPoppablesInThisLevel = 0;
 
         // Start is called before the first frame update
         void Start()
@@ -148,6 +150,8 @@ namespace LowPop
             var level = _levels[id];
             _poppables = level.Load();
             _loadedLevelId = id;
+            _nbCorrectPops = 0;
+            _nbPoppablesInThisLevel = _poppables.Count;
 
             var allocatedTime = level.GetGracePeriodDelay() + (level.GetExtraTimePerPoppable().Multiply(_poppables.Count));
             _scoreTimer = new ScoreTimer(allocatedTime, _timerGO, LevelCompleted);
@@ -176,6 +180,8 @@ namespace LowPop
                 {
                     callbackPair.Value();
                 }
+
+                _nbCorrectPops++;
             }
             else
             {
@@ -191,14 +197,11 @@ namespace LowPop
             var levelCompletionGO = GameObject.FindGameObjectWithTag("LevelCompletionMenu");
             var level = _levels[_loadedLevelId];
             _scoreTimer.StopTimer();
-            var remaining = _scoreTimer.GetTimeRemaining();
-            var penaltyFactor = Mathf.CeilToInt((float)-remaining.TotalSeconds);
-            penaltyFactor = penaltyFactor < 0 ? 0 : penaltyFactor;
-            Debug.Log($"{remaining.TotalSeconds} seconds remaing, nbTimesMissed {penaltyFactor}");
-            var negativePointsTime = level.GetNegativePointsPerSecondPassedAllocatedTime() * penaltyFactor;
-            var scoreMinusPenalty = level.Score - negativePointsTime;
-            var finalScore = scoreMinusPenalty < 0 ? 0 : scoreMinusPenalty; 
-            levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(level, finalScore);
+            Debug.Log($"_nbPoppablesInThisLevel {_nbPoppablesInThisLevel} - _nbCorrectPops {_nbCorrectPops}");
+            float ratioOfCorrectPops = (float)_nbCorrectPops / _nbPoppablesInThisLevel;
+            float finalScore = level.Score * ratioOfCorrectPops;
+            Debug.Log($"finalScore {finalScore} - level.Score {level.Score} - ratioOfCorrectPops {ratioOfCorrectPops}");
+            levelCompletionGO.GetComponent<LevelCompletionMenu>().OnLevelCompleted(level, (int)finalScore);
         }
 
         public Poppable GetNextPoppableToPop()
