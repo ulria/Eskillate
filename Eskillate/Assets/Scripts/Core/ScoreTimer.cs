@@ -55,8 +55,12 @@ namespace Core
                 }
                 else
                 {
-                    // Display time remaining in green
-                    textElement.color = new Color(0f / 255f, 225f / 255f, 0f / 255f, 1);
+                    // Display time remaining in a color gradient from green (timeRemaining / _allocatedTime == 1) to red (timeRemaining / _allocatedTime == 0)
+                    // green stays at one until ratio == 0.5, then gradually drops to 0
+                    // red gradually ramps to 1 until ratio == 0.5 then stays at 1
+                    float green = (float)(2*timeRemaining.TotalSeconds / _allocatedTime.TotalSeconds);
+                    float red = 2.0f - (float)(2*timeRemaining.TotalSeconds / _allocatedTime.TotalSeconds);
+                    textElement.color = new Color(red, green, 0.0f, 1);
                 }
             }
         }
