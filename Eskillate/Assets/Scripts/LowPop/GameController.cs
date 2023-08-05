@@ -149,10 +149,8 @@ namespace LowPop
             _poppables = level.Load();
             _loadedLevelId = id;
 
-            _scoreTimer = new ScoreTimer();
             var allocatedTime = level.GetGracePeriodDelay() + (level.GetExtraTimePerPoppable().Multiply(_poppables.Count));
-            _scoreTimer.SetAllocatedTime(allocatedTime);
-            _scoreTimer.SetTimerGO(_timerGO);
+            _scoreTimer = new ScoreTimer(allocatedTime, _timerGO, LevelCompleted);
             _timePenalty = level.GetTimePenaltyPerErrorInSeconds();
             _scoreTimer.StartTimer();
         }

@@ -11,15 +11,21 @@ namespace Core
         private Stopwatch _stopWatch;
         private TimeSpan _allocatedTime;
         private TimeSpan _penalty;
+        private Action _callbackOnExpired;
+        private bool _is_started = false;
 
-        public ScoreTimer()
+        public ScoreTimer(TimeSpan allocatedTime, GameObject go, Action callbackOnExpired)
         {
+            _allocatedTime = allocatedTime;
+            _timerGO = go;
+            _callbackOnExpired = callbackOnExpired;
             _stopWatch = new Stopwatch();
         }
 
         public void StartTimer()
         {
             _stopWatch.Start();
+            _is_started = true;
         }
 
         public void ResetTimer()
@@ -30,30 +36,28 @@ namespace Core
 
         public void StopTimer()
         {
+            _is_started = false;
             _stopWatch.Stop();
         }
-
-        public void SetAllocatedTime(TimeSpan allocatedTime)
-        {
-            _allocatedTime = allocatedTime;
-        }
-
+        
         public void Update()
         {
-            var timeRemaining = GetTimeRemaining();
-            
-            var textGO = _timerGO.transform.GetChild(0);
-            var textElement = textGO.GetComponent<TMPro.TextMeshPro>();
-            textElement.text = string.Format("{0:N2}", timeRemaining.TotalSeconds);
-            if (timeRemaining.TotalSeconds < 0)
+            if (_is_started)
             {
-                // Display time remaining in red
-                textElement.color = new Color(225f / 255f, 0f / 255f, 0f / 255f, 1);
-            }
-            else
-            {
-                // Display time remaining in green
-                textElement.color = new Color(0f / 255f, 225f / 255f, 0f / 255f, 1);
+                var timeRemaining = GetTimeRemaining();
+
+                var textGO = _timerGO.transform.GetChild(0);
+                var textElement = textGO.GetComponent<TMPro.TextMeshPro>();
+                textElement.text = string.Format("{0:N2}", timeRemaining.TotalSeconds);
+                if (timeRemaining.TotalSeconds < 0)
+                {
+                    _callbackOnExpired();
+                }
+                else
+                {
+                    // Display time remaining in green
+                    textElement.color = new Color(0f / 255f, 225f / 255f, 0f / 255f, 1);
+                }
             }
         }
 
@@ -61,11 +65,6 @@ namespace Core
         {
             var secondsAsTimeSpan = new TimeSpan(0, 0, seconds);
             _penalty += secondsAsTimeSpan;
-        }
-
-        public void SetTimerGO(GameObject go)
-        {
-            _timerGO = go;
         }
 
         public TimeSpan GetTimeRemaining()
