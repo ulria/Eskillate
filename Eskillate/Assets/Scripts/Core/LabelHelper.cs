@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using UnityEngine;
+using static Core.ResourcesHelper;
 
 public static class LabelHelper
 {
@@ -58,7 +59,7 @@ public static class LabelHelper
         Spanish
     }
 
-    private static readonly string _labelFileNameFormat = "Assets\\Resources\\Core\\Labels\\{0}\\{1}.json";
+    private static readonly string _labelFileNameFormat = Resource.Core.Labels.Path + "\\{0}\\{1}";
     private static Dictionary<Language, string> _prefixes = new Dictionary<Language, string>()
     {
         { Language.French, "fr" },
@@ -127,7 +128,8 @@ public static class LabelHelper
 
     private static string ReadLabel(string fileName)
     {
-        var json = File.ReadAllText(fileName);
+        TextAsset textFile = (TextAsset)Resources.Load(fileName);
+        var json = textFile.text;
         var label = JsonUtility.FromJson<LabelClass>(json);
         return label.Label;        
     }

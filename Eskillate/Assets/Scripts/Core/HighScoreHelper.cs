@@ -21,7 +21,7 @@ namespace Core
         [Serializable]
         private class HighScores
         {
-            public List<LevelHighScore> LevelHighScores;
+            public List<LevelHighScore> LevelHighScores = new List<LevelHighScore>();
         }
 
         [Serializable]
@@ -36,8 +36,18 @@ namespace Core
         {
             var highScores = LoadHighScores();
             var highScore = highScores.LevelHighScores.Where(hs => hs.MiniGameId == miniGameId && hs.LevelId == levelId);
-            // TODO - Add protection if the score does not exist yet. Not sure if this is a good idea, or if we require to change the HighScore file every time we add a level.
-            highScore.First().Score = score;
+            if (highScore.Count() < 1)
+            {
+                var newHighScore = new LevelHighScore();
+                newHighScore.MiniGameId = miniGameId;
+                newHighScore.LevelId = levelId;
+                newHighScore.Score = score;
+                highScores.LevelHighScores.Add(newHighScore);
+            }
+            else
+            {
+                highScore.First().Score = score;
+            }
             SaveHighScores();
         }
         
@@ -59,8 +69,17 @@ namespace Core
             if (_highScores != null)
                 return _highScores;
 
-            var json = ReadHighScoresFile();
-            _highScores = UnityEngine.JsonUtility.FromJson<HighScores>(json);
+            try
+            {
+                var json = ReadHighScoresFile();
+                _highScores = UnityEngine.JsonUtility.FromJson<HighScores>(json);
+            }
+            catch (Exception e)
+            {
+                // there were no HighScores file
+                _highScores = new HighScores();
+            }
+            
             return _highScores;
         }
 
@@ -73,16 +92,17 @@ namespace Core
 
         private static string ReadHighScoresFile()
         {
-            string path = "Assets/Resources/Core/HighScores.json";
-            var json = File.ReadAllText(path);
+            var json = File.ReadAllText(Resource.PersistentData.HighScores);
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new Exception("Could not find HighScores file ("+ Resource.PersistentData.HighScores + ").");
+            }
             return json;
         }
 
         private static void WriteHighScoresFile(string content)
         {
-            string path = "Assets/Resources/Core/HighScores.json";
-
-            File.WriteAllText(path, content);
+            File.WriteAllText(Resource.PersistentData.HighScores, content);
         }
 
         public static Sprite LoadStarsSprite(Stars score)
