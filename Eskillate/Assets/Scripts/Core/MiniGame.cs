@@ -37,6 +37,12 @@ namespace Core
             _player = MiniGameVideoPreviewPlayer.GetComponent<VideoPlayer>();
         }
 
+        private void OnMouseDown()
+        {
+            Debug.Log($"Minigame {NameLabel} clicked.");
+            OnSelected();
+        }
+
         public void OnSelected()
         {
             Init();
