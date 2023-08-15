@@ -37,10 +37,13 @@ namespace Core
             _player = MiniGameVideoPreviewPlayer.GetComponent<VideoPlayer>();
         }
 
-        private void OnMouseDown()
+        private void OnMouseUp()
         {
             Debug.Log($"Minigame {NameLabel} clicked.");
-            OnSelected();
+            // alert mini game selection that this mini game was clicked
+            var gameControllerGO = GameObject.Find("GameController");
+            var miniGameSelection = gameControllerGO.GetComponent<MiniGameSelection>();
+            miniGameSelection.MoveToSelectedSpot(this);
         }
 
         public void OnSelected()

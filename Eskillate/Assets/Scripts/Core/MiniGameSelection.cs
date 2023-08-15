@@ -183,9 +183,30 @@ namespace Core
 
         private void LerpToElement(float position)
         {
+            //Debug.Log($"Lerping (float) to {position}");
             var newX = Mathf.Lerp(ScrollListContent.GetComponent<RectTransform>().anchoredPosition.x, position, Time.deltaTime * 10f);
             Vector2 newPos = new Vector2(newX, 0);
             ScrollListContent.GetComponent<RectTransform>().anchoredPosition = newPos;
+        }
+
+        public void MoveToSelectedSpot(MiniGame selectedMiniGame)
+        {
+            if (!isDragging)
+            {
+                // find which miniGame is selected
+                for (var index = 0; index < _elements.Count; index++)
+                {
+                    var miniGame = _elements[index];
+                    if (miniGame.GetComponent<MiniGame>().NameLabel == selectedMiniGame.NameLabel)
+                    {
+                        // move to that mini game
+                        var scrollNbElementOffset = _elements.Count - 1 - index;
+                        var scrollOffset = scrollNbElementOffset * _elementWidthPlusSpacing;
+                        var currentScrollX = scrollOffset + _scrollMin;
+                        ScrollListContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(currentScrollX, ScrollListContent.GetComponent<RectTransform>().anchoredPosition.y);
+                    }
+                }
+            }
         }
 
         public void OnBeginDrag()
